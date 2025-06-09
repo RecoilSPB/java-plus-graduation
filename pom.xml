@@ -19,9 +19,9 @@
 
 	<modules>
 		<module>stats</module>
-		<module>main-server</module>
         <module>infra</module>
-    </modules>
+		<module>core</module>
+	</modules>
 
 	<properties>
 		<java.version>22</java.version>

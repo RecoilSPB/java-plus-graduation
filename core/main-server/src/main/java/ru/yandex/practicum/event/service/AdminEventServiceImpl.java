@@ -27,7 +27,6 @@ import ru.practicum.request.repository.RequestRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,8 +47,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) throws ValidationException {
 
-        List<EventFullDto> eventDtos = null;
-        List<EventState> eventStateList = null;
+        List<EventFullDto> eventDtos;
+        List<EventState> eventStateList;
 
         if (rangeStart != null && rangeEnd != null) {
             if (rangeStart.isAfter(rangeEnd)) {
@@ -126,7 +125,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Событие не существует " + eventId));
 
-        if (LocalDateTime.now().isAfter(event.getEventDate().minus(2, ChronoUnit.HOURS))) {
+        if (LocalDateTime.now().isAfter(event.getEventDate().minusHours(2))) {
             throw new ConflictException("До начала события меньше часа, изменение события невозможно");
         }
         if (!event.getState().equals(EventState.PENDING)) {

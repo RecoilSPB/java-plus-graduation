@@ -28,7 +28,7 @@ services:
       retries: 10
 
   ewm-service:
-    build: main-server
+    build: core/main-server
     image: main-server
     container_name: ewm-service
     ports:
