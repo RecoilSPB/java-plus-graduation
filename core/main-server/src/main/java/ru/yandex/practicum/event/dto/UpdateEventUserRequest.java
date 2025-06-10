@@ -1,4 +1,4 @@
-package ru.practicum.event.dto;
+package ru.yandex.practicum.event.dto;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.model.Location;
+import ru.yandex.practicum.event.model.Location;
 
 
 @Getter

@@ -1,4 +1,4 @@
-package ru.practicum.request.model;
+package ru.yandex.practicum.request.model;
 
 public class EventRequestStatus {
     public static final String PENDING_REQUEST = "PENDING";

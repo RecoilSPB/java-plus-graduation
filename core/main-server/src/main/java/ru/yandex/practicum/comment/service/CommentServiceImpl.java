@@ -1,22 +1,22 @@
-package ru.practicum.comment.service;
+package ru.yandex.practicum.comment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.comment.dto.CommentDto;
-import ru.practicum.comment.dto.GetCommentsAdminRequest;
-import ru.practicum.comment.dto.CommentMapper;
-import ru.practicum.comment.model.Comment;
-import ru.practicum.comment.repository.CommentRepository;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
+import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.comment.dto.GetCommentsAdminRequest;
+import ru.yandex.practicum.comment.dto.CommentMapper;
+import ru.yandex.practicum.comment.model.Comment;
+import ru.yandex.practicum.comment.repository.CommentRepository;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

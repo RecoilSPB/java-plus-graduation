@@ -1,4 +1,4 @@
-package ru.practicum.event.controller;
+package ru.yandex.practicum.event.controller;
 
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -6,18 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.UpdateEventAdminRequest;
-import ru.practicum.event.service.AdminEventService;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.exception.WrongDataException;
+import ru.yandex.practicum.event.dto.EventFullDto;
+import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
+import ru.yandex.practicum.event.service.AdminEventService;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.exception.WrongDataException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
+import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @RestController
 @RequestMapping("/admin/events")

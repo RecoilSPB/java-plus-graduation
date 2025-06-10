@@ -1,4 +1,4 @@
-package ru.practicum.user.service;
+package ru.yandex.practicum.user.service;
 
 
 import lombok.AccessLevel;
@@ -8,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.dto.UserMapper;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.user.dto.UserDto;
+import ru.yandex.practicum.user.dto.UserMapper;
+import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

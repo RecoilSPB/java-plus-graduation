@@ -1,9 +1,9 @@
-package ru.practicum.request.service;
+package ru.yandex.practicum.request.service;
 
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.request.dto.EventRequestDto;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.request.dto.EventRequestDto;
 
 import java.util.List;
 

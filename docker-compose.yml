@@ -1,16 +1,16 @@
 services:
-  stats-server:
-    build: stats/stats-server
-    image: stats-server
-    container_name: stats-server
-    ports:
-      - "9090:9090"
-    depends_on:
-      - stats-db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-stats:5432/explore-stats
-      - SPRING_DATASOURCE_USERNAME=explore-stats
-      - SPRING_DATASOURCE_PASSWORD=explore-stats
+#  stats-server:
+#    build: stats/stats-server
+#    image: stats-server
+#    container_name: stats-server
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - stats-db
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-stats:5432/explore-stats
+#      - SPRING_DATASOURCE_USERNAME=explore-stats
+#      - SPRING_DATASOURCE_PASSWORD=explore-stats
 
   stats-db:
     image: postgres:16.1
@@ -27,18 +27,18 @@ services:
       interval: 5s
       retries: 10
 
-  ewm-service:
-    build: core/main-server
-    image: main-server
-    container_name: ewm-service
-    ports:
-      - "8080:8080"
-    depends_on:
-      - stats-db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-main:5432/explore-main
-      - SPRING_DATASOURCE_USERNAME=explore-main
-      - SPRING_DATASOURCE_PASSWORD=explore-main
+#  ewm-service:
+#    build: core/main-server
+#    image: main-server
+#    container_name: ewm-service
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - stats-db
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-main:5432/explore-main
+#      - SPRING_DATASOURCE_USERNAME=explore-main
+#      - SPRING_DATASOURCE_PASSWORD=explore-main
 
   main-db:
     image: postgres:16.1

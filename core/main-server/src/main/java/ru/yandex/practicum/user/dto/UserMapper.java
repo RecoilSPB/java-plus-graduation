@@ -1,8 +1,8 @@
-package ru.practicum.user.dto;
+package ru.yandex.practicum.user.dto;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.user.model.User;
+import ru.yandex.practicum.user.model.User;
 
 @Component
 @AllArgsConstructor

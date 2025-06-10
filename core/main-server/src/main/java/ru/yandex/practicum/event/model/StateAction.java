@@ -1,4 +1,4 @@
-package ru.practicum.event.model;
+package ru.yandex.practicum.event.model;
 
 public enum StateAction {
     PUBLISH_EVENT,

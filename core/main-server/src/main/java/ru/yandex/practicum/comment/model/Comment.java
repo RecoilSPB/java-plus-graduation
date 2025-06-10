@@ -1,16 +1,16 @@
-package ru.practicum.comment.model;
+package ru.yandex.practicum.comment.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.model.Event;
-import ru.practicum.user.model.User;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
+import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Entity
 @Getter

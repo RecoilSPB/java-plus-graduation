@@ -1,10 +1,10 @@
-package ru.practicum.compilation.service;
+package ru.yandex.practicum.compilation.service;
 
-import ru.practicum.compilation.dto.NewCompilationDto;
-import ru.practicum.compilation.dto.ResponseCompilationDto;
-import ru.practicum.compilation.dto.UpdateCompilationRequest;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
+import ru.yandex.practicum.compilation.dto.NewCompilationDto;
+import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
+import ru.yandex.practicum.compilation.dto.UpdateCompilationRequest;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package ru.practicum.comment.service;
+package ru.yandex.practicum.comment.service;
 
-import ru.practicum.comment.dto.GetCommentsAdminRequest;
-import ru.practicum.comment.dto.CommentDto;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.comment.dto.GetCommentsAdminRequest;
+import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.List;
 

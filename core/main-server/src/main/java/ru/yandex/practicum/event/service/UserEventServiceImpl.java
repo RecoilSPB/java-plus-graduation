@@ -1,4 +1,4 @@
-package ru.practicum.event.service;
+package ru.yandex.practicum.event.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,30 +6,30 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.category.model.Category;
-import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.client.StatsClient;
-import ru.practicum.event.dto.*;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.StateAction;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.event.repository.LocationRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.exception.WrongDataException;
-import ru.practicum.request.repository.RequestRepository;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
+import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.category.repository.CategoryRepository;
+import ru.yandex.practicum.client.StatsClient;
+import ru.yandex.practicum.dto.StatsRequestParamsDto;
+import ru.yandex.practicum.event.dto.*;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.model.StateAction;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.event.repository.LocationRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.exception.WrongDataException;
+import ru.yandex.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.user.repository.UserRepository;
+import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Service
 @Slf4j
@@ -161,7 +161,7 @@ public class UserEventServiceImpl implements UserEventService {
         }
         if (inpEventDto.getEventDate() != null) {
             LocalDateTime updateEventDate = LocalDateTime.parse(inpEventDto.getEventDate(),
-                    DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+                    JsonFormatPattern.DATE_TIME_FORMATTER);
             if (LocalDateTime.now().isAfter(updateEventDate)) {
                 throw new ValidationException("Нельзя установить дату из прошлого.");
             }
@@ -199,10 +199,17 @@ public class UserEventServiceImpl implements UserEventService {
 
     EventFullDto getViewsCounter(EventFullDto eventFullDto) {
         ArrayList<String> urls = new ArrayList<>(List.of("/events/" + eventFullDto.getId()));
-        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
 
-        Integer views = statsClient.getAllStats(start, end, urls, true).size();
+        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end)
+                .uris(urls)
+                .unique(true)
+                .build();
+
+        Integer views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);
         return eventFullDto;
     }

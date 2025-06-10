@@ -1,4 +1,4 @@
-package ru.practicum.event.controller;
+package ru.yandex.practicum.event.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Positive;
@@ -7,11 +7,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.service.EventService;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
+import ru.yandex.practicum.event.dto.EventFullDto;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.service.EventService;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
 
 import java.util.List;
 

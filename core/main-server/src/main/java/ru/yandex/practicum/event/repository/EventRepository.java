@@ -1,12 +1,12 @@
-package ru.practicum.event.repository;
+package ru.yandex.practicum.event.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.user.model.User;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

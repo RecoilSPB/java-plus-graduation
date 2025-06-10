@@ -1,4 +1,4 @@
-package ru.practicum.request.service;
+package ru.yandex.practicum.request.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,25 +6,25 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.request.dto.EventRequestDto;
-import ru.practicum.request.dto.EventRequestMapper;
-import ru.practicum.request.model.EventRequest;
-import ru.practicum.request.repository.RequestRepository;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.request.dto.EventRequestDto;
+import ru.yandex.practicum.request.dto.EventRequestMapper;
+import ru.yandex.practicum.request.model.EventRequest;
+import ru.yandex.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.request.model.EventRequestStatus.*;
+import static ru.yandex.practicum.request.model.EventRequestStatus.*;
 
 @Service
 @Slf4j
@@ -107,7 +107,8 @@ public class EventRequestServiceImpl implements EventRequestService {
                 if (updateRequest.getStatus().equals(CONFIRMED_REQUEST) && event.getParticipantLimit() != 0) {
                     if (event.getParticipantLimit() < confirmedRequestsCounter) {
 
-                        pending.stream().peek(p -> p.setStatus(REJECTED_REQUEST)).collect(Collectors.toList());
+                        List<EventRequest> collect = pending.stream().peek(p -> p.setStatus(REJECTED_REQUEST)).toList();
+                        log.error("Превышено число возможных заявок на участие \n" + collect);
 
                         throw new ConflictException("Превышено число возможных заявок на участие");
                     }

@@ -1,4 +1,4 @@
-package ru.practicum.user.controller;
+package ru.yandex.practicum.user.controller;
 
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -7,9 +7,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.service.UserService;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.user.dto.UserDto;
+import ru.yandex.practicum.user.service.UserService;
 
 import java.util.List;
 

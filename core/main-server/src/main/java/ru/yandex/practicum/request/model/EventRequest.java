@@ -1,10 +1,10 @@
-package ru.practicum.request.model;
+package ru.yandex.practicum.request.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.model.Event;
-import ru.practicum.user.model.User;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 

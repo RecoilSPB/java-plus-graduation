@@ -1,4 +1,4 @@
-package ru.practicum.comment.controller;
+package ru.yandex.practicum.comment.controller;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.comment.dto.CommentDto;
-import ru.practicum.comment.service.CommentService;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.comment.service.CommentService;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.Collection;
 

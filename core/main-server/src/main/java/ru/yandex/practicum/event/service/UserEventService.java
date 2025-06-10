@@ -1,13 +1,13 @@
-package ru.practicum.event.service;
+package ru.yandex.practicum.event.service;
 
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.dto.NewEventDto;
-import ru.practicum.event.dto.UpdateEventUserRequest;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.exception.WrongDataException;
+import ru.yandex.practicum.event.dto.EventFullDto;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.dto.NewEventDto;
+import ru.yandex.practicum.event.dto.UpdateEventUserRequest;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.exception.WrongDataException;
 
 import java.util.List;
 

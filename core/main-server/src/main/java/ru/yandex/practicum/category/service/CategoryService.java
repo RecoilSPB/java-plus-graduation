@@ -1,8 +1,8 @@
-package ru.practicum.category.service;
+package ru.yandex.practicum.category.service;
 
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.category.dto.CategoryDto;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.List;
 

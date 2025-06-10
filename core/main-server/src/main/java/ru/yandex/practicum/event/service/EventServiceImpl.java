@@ -1,4 +1,4 @@
-package ru.practicum.event.service;
+package ru.yandex.practicum.event.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,24 +7,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.client.StatsClient;
-import ru.practicum.dto.StatsRequestDto;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventMapper;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.client.StatsClient;
+import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsRequestParamsDto;
+import ru.yandex.practicum.event.dto.EventFullDto;
+import ru.yandex.practicum.event.dto.EventMapper;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Service
 @Slf4j
@@ -53,9 +52,17 @@ public class EventServiceImpl implements EventService {
         EventFullDto eventFullDto = EventMapper.mapEventToFullDto(event, confirmed);
 
         List<String> urls = Collections.singletonList(uri);
-        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
-        var views = statsClient.getAllStats(start, end, urls, true).size();
+
+        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end)
+                .uris(urls)
+                .unique(true)
+                .build();
+
+        var views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);
         return eventFullDto;
     }
@@ -85,7 +92,7 @@ public class EventServiceImpl implements EventService {
                 if (rangeStart == null) {
                     startDate = LocalDateTime.now();
                 } else {
-                    startDate = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+                    startDate = LocalDateTime.parse(rangeStart, JsonFormatPattern.DATE_TIME_FORMATTER);
                 }
                 if (text == null) {
                     text = "";
@@ -94,7 +101,7 @@ public class EventServiceImpl implements EventService {
                     events = eventRepository.findEventsByText("%" + text.toLowerCase() + "%", EventState.PUBLISHED,
                             PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "e.eventDate")));
                 } else {
-                    endDate = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+                    endDate = LocalDateTime.parse(rangeEnd, JsonFormatPattern.DATE_TIME_FORMATTER);
                     if (startDate.isAfter(endDate)) {
                         throw new ValidationException("Дата и время начала поиска не должна быть позже даты и времени конца поиска");
                     } else {
@@ -110,12 +117,12 @@ public class EventServiceImpl implements EventService {
             if (rangeStart == null) {
                 startDate = LocalDateTime.now();
             } else {
-                startDate = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+                startDate = LocalDateTime.parse(rangeStart, JsonFormatPattern.DATE_TIME_FORMATTER);
             }
             if (rangeEnd == null) {
                 endDate = null;
             } else {
-                endDate = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+                endDate = LocalDateTime.parse(rangeEnd, JsonFormatPattern.DATE_TIME_FORMATTER);
             }
             if (rangeStart != null && rangeEnd != null) {
                 if (startDate.isAfter(endDate)) {
@@ -157,7 +164,14 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        var viewsCounter = statsClient.getAllStats(startTime, LocalDateTime.now(), uris, true);
+        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
+                .start(startTime)
+                .end(LocalDateTime.now())
+                .uris(uris)
+                .unique(true)
+                .build();
+
+        var viewsCounter = statsClient.getAllStats(statsRequestParamsDto);
         for (var statsDto : viewsCounter) {
             String[] split = statsDto.getUri().split("/");
             eventIdsWithViewsCounter.put(Long.parseLong(split[2]), Math.toIntExact(statsDto.getHits()));

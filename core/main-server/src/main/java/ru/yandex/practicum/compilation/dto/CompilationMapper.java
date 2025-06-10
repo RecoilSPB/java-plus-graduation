@@ -1,7 +1,7 @@
-package ru.practicum.compilation.dto;
+package ru.yandex.practicum.compilation.dto;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.compilation.model.Compilation;
+import ru.yandex.practicum.compilation.model.Compilation;
 
 @UtilityClass
 public class CompilationMapper {

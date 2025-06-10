@@ -1,8 +1,8 @@
-package ru.practicum.request.repository;
+package ru.yandex.practicum.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.request.model.EventRequest;
+import ru.yandex.practicum.request.model.EventRequest;
 
 import java.util.List;
 

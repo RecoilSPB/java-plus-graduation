@@ -1,13 +1,13 @@
-package ru.practicum.request.controller;
+package ru.yandex.practicum.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.request.dto.EventRequestDto;
-import ru.practicum.request.service.EventRequestService;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.request.dto.EventRequestDto;
+import ru.yandex.practicum.request.service.EventRequestService;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package ru.practicum.compilation.model;
+package ru.yandex.practicum.compilation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.Event;
 
 import java.util.List;
 

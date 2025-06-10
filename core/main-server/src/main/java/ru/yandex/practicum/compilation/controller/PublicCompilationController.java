@@ -1,12 +1,12 @@
-package ru.practicum.compilation.controller;
+package ru.yandex.practicum.compilation.controller;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.dto.ResponseCompilationDto;
-import ru.practicum.compilation.service.CompilationService;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
+import ru.yandex.practicum.compilation.service.CompilationService;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.List;
 

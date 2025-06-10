@@ -1,4 +1,4 @@
-package ru.practicum.comment.dto;
+package ru.yandex.practicum.comment.dto;
 
 import lombok.*;
 import lombok.experimental.Accessors;

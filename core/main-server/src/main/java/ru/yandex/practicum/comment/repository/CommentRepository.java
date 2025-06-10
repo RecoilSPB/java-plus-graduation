@@ -1,9 +1,9 @@
-package ru.practicum.comment.repository;
+package ru.yandex.practicum.comment.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.comment.model.Comment;
+import ru.yandex.practicum.comment.model.Comment;
 
 import java.util.List;
 

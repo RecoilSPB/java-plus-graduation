@@ -1,12 +1,12 @@
-package ru.practicum.event.dto;
+package ru.yandex.practicum.event.dto;
 
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.Location;
-import ru.practicum.user.dto.UserDto;
+import ru.yandex.practicum.category.dto.CategoryDto;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.model.Location;
+import ru.yandex.practicum.user.dto.UserDto;
 
 @Getter
 @Setter

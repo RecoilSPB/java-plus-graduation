@@ -1,4 +1,4 @@
-package ru.practicum.util;
+package ru.yandex.practicum.util;
 
 import lombok.experimental.UtilityClass;
 

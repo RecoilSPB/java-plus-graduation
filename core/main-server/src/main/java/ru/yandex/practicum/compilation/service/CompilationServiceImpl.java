@@ -1,4 +1,4 @@
-package ru.practicum.compilation.service;
+package ru.yandex.practicum.compilation.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,18 +7,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.compilation.dto.CompilationMapper;
-import ru.practicum.compilation.dto.NewCompilationDto;
-import ru.practicum.compilation.dto.ResponseCompilationDto;
-import ru.practicum.compilation.dto.UpdateCompilationRequest;
-import ru.practicum.compilation.model.Compilation;
-import ru.practicum.compilation.repository.CompilationRepository;
-import ru.practicum.event.dto.EventMapper;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
+import ru.yandex.practicum.compilation.dto.CompilationMapper;
+import ru.yandex.practicum.compilation.dto.NewCompilationDto;
+import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
+import ru.yandex.practicum.compilation.dto.UpdateCompilationRequest;
+import ru.yandex.practicum.compilation.model.Compilation;
+import ru.yandex.practicum.compilation.repository.CompilationRepository;
+import ru.yandex.practicum.event.dto.EventMapper;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
 
 import java.util.ArrayList;
 import java.util.Collections;

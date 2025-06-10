@@ -1,4 +1,4 @@
-package ru.practicum.comment.dto;
+package ru.yandex.practicum.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
+import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Getter
 @Setter

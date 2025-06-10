@@ -1,9 +1,9 @@
-package ru.practicum.user.service;
+package ru.yandex.practicum.user.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.user.dto.UserDto;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.user.dto.UserDto;
 
 import java.util.List;
 

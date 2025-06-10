@@ -1,4 +1,4 @@
-package ru.practicum.exception;
+package ru.yandex.practicum.exception;
 
 public class WrongDataException extends Exception {
     public WrongDataException(String message) {

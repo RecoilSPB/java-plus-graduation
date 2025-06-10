@@ -1,16 +1,16 @@
-package ru.practicum.event.dto;
+package ru.yandex.practicum.event.dto;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.category.dto.CategoryMapper;
-import ru.practicum.category.model.Category;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.user.dto.UserMapper;
+import ru.yandex.practicum.category.dto.CategoryMapper;
+import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.user.dto.UserMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
+import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @UtilityClass
 public class EventMapper {

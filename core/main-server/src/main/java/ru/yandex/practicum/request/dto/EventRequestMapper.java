@@ -1,13 +1,13 @@
-package ru.practicum.request.dto;
+package ru.yandex.practicum.request.dto;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.request.model.EventRequest;
+import ru.yandex.practicum.request.model.EventRequest;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
+import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Component
 @AllArgsConstructor

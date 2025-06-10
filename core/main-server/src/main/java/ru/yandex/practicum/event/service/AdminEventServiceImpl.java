@@ -1,4 +1,4 @@
-package ru.practicum.event.service;
+package ru.yandex.practicum.event.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,42 +7,42 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.category.model.Category;
-import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.client.StatsClient;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventMapper;
-import ru.practicum.event.dto.UpdateEventAdminRequest;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.StateAction;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.event.repository.LocationRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.exception.WrongDataException;
-import ru.practicum.request.model.EventRequest;
-import ru.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.category.repository.CategoryRepository;
+import ru.yandex.practicum.client.StatsClient;
+import ru.yandex.practicum.client.StatsClientImpl;
+import ru.yandex.practicum.dto.StatsRequestParamsDto;
+import ru.yandex.practicum.event.dto.EventFullDto;
+import ru.yandex.practicum.event.dto.EventMapper;
+import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.model.StateAction;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.event.repository.LocationRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.exception.WrongDataException;
+import ru.yandex.practicum.request.model.EventRequest;
+import ru.yandex.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.util.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminEventServiceImpl implements AdminEventService {
     final EventRepository eventRepository;
     final RequestRepository requestRepository;
     final CategoryRepository categoryRepository;
     final LocationRepository locationRepository;
 
-    final StatsClient statsClient;
+    final StatsClientImpl statsClient;
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) throws ValidationException {
@@ -99,7 +99,14 @@ public class AdminEventServiceImpl implements AdminEventService {
                 }
             }
 
-            var viewsCounter = statsClient.getAllStats(startTime, LocalDateTime.now(), uris, true);
+            StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
+                    .start(startTime)
+                    .end(LocalDateTime.now())
+                    .uris(uris)
+                    .unique(true)
+                    .build();
+
+            var viewsCounter = statsClient.getAllStats(statsRequestParamsDto);
             for (var statsDto : viewsCounter) {
                 String[] split = statsDto.getUri().split("/");
                 eventIdsWithViewsCounter.put(Long.parseLong(split[2]), Math.toIntExact(statsDto.getHits()));
@@ -168,7 +175,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             event.setDescription(updateRequest.getDescription());
         }
         if (updateRequest.getEventDate() != null) {
-            event.setEventDate(LocalDateTime.parse(updateRequest.getEventDate(), DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME)));
+            event.setEventDate(LocalDateTime.parse(updateRequest.getEventDate(), JsonFormatPattern.DATE_TIME_FORMATTER));
         }
         if (updateRequest.getLocation() != null) {
             event.setLocation(updateRequest.getLocation());
@@ -207,10 +214,17 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     EventFullDto getViewsCounter(EventFullDto eventFullDto) {
         ArrayList<String> urls = new ArrayList<>(List.of("/events/" + eventFullDto.getId()));
-        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), DateTimeFormatter.ofPattern(JSON_FORMAT_PATTERN_FOR_TIME));
+        LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
 
-        Integer views = statsClient.getAllStats(start, end, urls, true).size();
+        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end)
+                .uris(urls)
+                .unique(true)
+                .build();
+
+        Integer views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);
         return eventFullDto;
     }

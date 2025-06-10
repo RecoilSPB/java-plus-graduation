@@ -1,4 +1,4 @@
-package ru.practicum.comment.controller;
+package ru.yandex.practicum.comment.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comment.dto.CommentDto;
-import ru.practicum.comment.service.CommentService;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.comment.service.CommentService;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.Collection;
 

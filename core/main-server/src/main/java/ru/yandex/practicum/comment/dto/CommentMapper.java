@@ -1,9 +1,9 @@
-package ru.practicum.comment.dto;
+package ru.yandex.practicum.comment.dto;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.comment.model.Comment;
-import ru.practicum.event.model.Event;
-import ru.practicum.user.model.User;
+import ru.yandex.practicum.comment.model.Comment;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.user.model.User;
 
 import java.util.List;
 

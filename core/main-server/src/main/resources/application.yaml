@@ -1,9 +1,6 @@
-server:
-  port: 8080
-  url: http://localhost:8080
-stats-server:
-  url: http://stats-server:9090
 spring:
+  application:
+    name: main-server
   jpa:
     properties:
       hibernate:
@@ -22,7 +19,7 @@ spring:
     log-startup-info: false
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://main-db:5432/explore-main
+    url: jdbc:postgresql://localhost:6433/explore-main
     username: explore-main
     password: explore-main
 logging:
@@ -33,3 +30,18 @@ logging:
         orm:
           jpa: INFO
         transaction: INFO
+server:
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    leaseRenewalIntervalInSeconds: 10
+
+stats-server:
+  url: http://stats-server:9090

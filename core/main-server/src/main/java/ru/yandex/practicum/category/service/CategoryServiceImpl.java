@@ -1,4 +1,4 @@
-package ru.practicum.category.service;
+package ru.yandex.practicum.category.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.category.dto.CategoryMapper;
-import ru.practicum.category.model.Category;
-import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
+import ru.yandex.practicum.category.dto.CategoryDto;
+import ru.yandex.practicum.category.dto.CategoryMapper;
+import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.category.repository.CategoryRepository;
+import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
