@@ -9,6 +9,7 @@ spring:
         native:
           searchLocations:
             - classpath:config/infra/{application}
+            - classpath:config/core/{application}
       discovery:
         enabled: true
 

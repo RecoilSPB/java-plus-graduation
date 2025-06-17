@@ -1,28 +1,20 @@
-spring:
-  application:
-    name: stats-server
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc.time_zone: UTC
-  sql:
-    init:
-      mode: always
-  main:
-    banner-mode: off
-    log-startup-info: false
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6432/explore-stats
-    username: explore-stats
-    password: explore-stats
-
 server:
   port: 0
+
+spring:
+  application:
+    name: stat-server
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
+      discovery:
+        enabled: true
+        serviceId: config-server
 
 eureka:
   client:
@@ -33,5 +25,3 @@ eureka:
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
-
-uri: http://stats-server:9090

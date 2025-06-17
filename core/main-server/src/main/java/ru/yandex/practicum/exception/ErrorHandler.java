@@ -41,6 +41,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleWrongData(final ConflictException e) {
         log.error("Conflict: " + e.getMessage());
-        return Map.of("error", e.getMessage());
+        return Map.of("message", e.getMessage());
     }
 }

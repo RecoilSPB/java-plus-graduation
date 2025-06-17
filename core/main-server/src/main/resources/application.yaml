@@ -1,37 +1,20 @@
-spring:
-  application:
-    name: main-server
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc.time_zone: UTC
-    database: POSTGRESQL
-    show-sql: true
-  sql:
-    init:
-      mode: always
-  jackson:
-    serialization:
-      fail-on-empty-beans: false
-  main:
-    banner-mode: off
-    log-startup-info: false
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6433/explore-main
-    username: explore-main
-    password: explore-main
-logging:
-  level:
-    org:
-      zalando.logbook: TRACE
-      springframework:
-        orm:
-          jpa: INFO
-        transaction: INFO
 server:
   port: 0
+
+spring:
+  application:
+    name: main-service
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
+      discovery:
+        enabled: true
+        serviceId: config-server
 
 eureka:
   client:
@@ -42,6 +25,3 @@ eureka:
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
-
-stats-server:
-  url: http://stats-server:9090

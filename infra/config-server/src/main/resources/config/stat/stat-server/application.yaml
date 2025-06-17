@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.time_zone: UTC
+  sql:
+    init:
+      mode: always
+  main:
+    banner-mode: off
+    log-startup-info: false
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6432/explore-stats
+    username: explore-stats
+    password: explore-stats
+
+logging:
+  level:
+    "org.springframework.orm.jpa": INFO
+    "org.springframework.transaction": INFO
+    "org.springframework.transaction.interceptor": TRACE
+    "org.springframework.orm.jpa.JpaTransactionManager": DEBUG
+    "org.hibernate.SQL": DEBUG
+    "org.hibernate.orm.jdbc.bind": TRACE
