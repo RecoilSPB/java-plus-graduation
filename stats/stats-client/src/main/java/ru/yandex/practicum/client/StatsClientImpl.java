@@ -128,7 +128,7 @@ public class StatsClientImpl implements StatsClient{
     }
 
     private URI makeUri(String path) {
-        ServiceInstance instance = retryTemplate.execute(_ -> getInstance(statsServiceId));
+        ServiceInstance instance = retryTemplate.execute(cxt -> getInstance(statsServiceId));
         log.info("Host() = {} Port() = {}", instance.getHost(), instance.getPort());
         return URI.create("http://" + instance.getHost() + ":" + instance.getPort() + path);
     }
