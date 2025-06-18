@@ -10,6 +10,7 @@ spring:
           searchLocations:
             - classpath:config/infra/{application}
             - classpath:config/core/{application}
+            - classpath:config/stats/{application}
       discovery:
         enabled: true
 
@@ -25,3 +26,6 @@ eureka:
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
+logging:
+  level:
+    org.springframework.cloud.config: TRACE
