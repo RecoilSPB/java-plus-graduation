@@ -60,6 +60,15 @@ public class UserEventServiceImpl implements UserEventService {
         }
     }
 
+    private static StatsRequestParamsDto getStatsRequestParamsDto(LocalDateTime start, LocalDateTime end, ArrayList<String> urls) {
+        return StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end)
+                .uris(urls)
+                .unique(true)
+                .build();
+    }
+
     @Override
     public EventFullDto addEvent(Long userId, NewEventDto eventDto) throws ValidationException, WrongDataException, NotFoundException {
         log.info("Users...");
@@ -129,6 +138,8 @@ public class UserEventServiceImpl implements UserEventService {
                 .collect(Collectors.toList());
     }
 
+    // Вспомогательные функции
+
     @Override
     public EventFullDto getEventById(Long userId, Long eventId) throws NotFoundException, ValidationException {
         User user = getUserById(userId);
@@ -139,8 +150,6 @@ public class UserEventServiceImpl implements UserEventService {
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
         return getViewsCounter(EventMapper.mapEventToFullDto(event, confirmed));
     }
-
-    // Вспомогательные функции
 
     Event getEventById(Long eventId) throws NotFoundException {
         return eventRepository.findById(eventId).orElseThrow(
@@ -202,12 +211,7 @@ public class UserEventServiceImpl implements UserEventService {
         LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
 
-        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
-                .start(start)
-                .end(end)
-                .uris(urls)
-                .unique(true)
-                .build();
+        StatsRequestParamsDto statsRequestParamsDto = getStatsRequestParamsDto(start, end, urls);
 
         Integer views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);

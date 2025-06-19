@@ -36,6 +36,15 @@ public class EventServiceImpl implements EventService {
 
     final StatsClient statsClient;
 
+    private static StatsRequestParamsDto getStatsRequestParamsDto(LocalDateTime start, LocalDateTime end, List<String> urls) {
+        return StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end)
+                .uris(urls)
+                .unique(true)
+                .build();
+    }
+
     @Override
     public EventFullDto getEventById(Long eventId, String uri, String ip) throws NotFoundException {
         statsClient.postStats(new StatsRequestDto("main-server",
@@ -55,12 +64,7 @@ public class EventServiceImpl implements EventService {
         LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
 
-        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
-                .start(start)
-                .end(end)
-                .uris(urls)
-                .unique(true)
-                .build();
+        StatsRequestParamsDto statsRequestParamsDto = getStatsRequestParamsDto(start, end, urls);
 
         var views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);
@@ -164,12 +168,7 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
-                .start(startTime)
-                .end(LocalDateTime.now())
-                .uris(uris)
-                .unique(true)
-                .build();
+        StatsRequestParamsDto statsRequestParamsDto = getStatsRequestParamsDto(startTime, LocalDateTime.now(), uris);
 
         var viewsCounter = statsClient.getAllStats(statsRequestParamsDto);
         for (var statsDto : viewsCounter) {

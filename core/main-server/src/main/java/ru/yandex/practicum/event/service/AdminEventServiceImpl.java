@@ -1,15 +1,12 @@
 package ru.yandex.practicum.event.service;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
-import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.client.StatsClientImpl;
 import ru.yandex.practicum.dto.StatsRequestParamsDto;
 import ru.yandex.practicum.event.dto.EventFullDto;
@@ -43,6 +40,15 @@ public class AdminEventServiceImpl implements AdminEventService {
     final LocationRepository locationRepository;
 
     final StatsClientImpl statsClient;
+
+    private static StatsRequestParamsDto getStatsRequestParamsDto(LocalDateTime start, Optional<LocalDateTime> end, ArrayList<String> urls) {
+        return StatsRequestParamsDto.builder()
+                .start(start)
+                .end(end.orElse(LocalDateTime.now()))
+                .uris(urls)
+                .unique(true)
+                .build();
+    }
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) throws ValidationException {
@@ -99,12 +105,8 @@ public class AdminEventServiceImpl implements AdminEventService {
                 }
             }
 
-            StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
-                    .start(startTime)
-                    .end(LocalDateTime.now())
-                    .uris(uris)
-                    .unique(true)
-                    .build();
+
+            StatsRequestParamsDto statsRequestParamsDto = getStatsRequestParamsDto(startTime, Optional.empty(), uris);
 
             var viewsCounter = statsClient.getAllStats(statsRequestParamsDto);
             for (var statsDto : viewsCounter) {
@@ -217,12 +219,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);
         LocalDateTime end = LocalDateTime.now();
 
-        StatsRequestParamsDto statsRequestParamsDto = StatsRequestParamsDto.builder()
-                .start(start)
-                .end(end)
-                .uris(urls)
-                .unique(true)
-                .build();
+        StatsRequestParamsDto statsRequestParamsDto = getStatsRequestParamsDto(start, Optional.of(end), urls);
 
         Integer views = statsClient.getAllStats(statsRequestParamsDto).size();
         eventFullDto.setViews(views);

@@ -101,11 +101,8 @@ public class StatsClientImpl implements StatsClient{
             return false;
         }
 
-        if (statsRequestParamsDto.getUris() != null && statsRequestParamsDto.getUris().isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return statsRequestParamsDto.getUris() != null && !statsRequestParamsDto.getUris().isEmpty()
+                && !statsRequestParamsDto.getUris().stream().allMatch(String::isBlank);
     }
 
     @Override
