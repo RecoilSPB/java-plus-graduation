@@ -18,7 +18,7 @@ spring:
     log-startup-info: false
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6432/explore-stats
+    url: jdbc:postgresql://stats-db:5432/explore-stats
     username: explore-stats
     password: explore-stats
 
