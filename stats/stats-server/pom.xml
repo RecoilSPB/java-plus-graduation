@@ -4,25 +4,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>ru.practicum</groupId>
-        <artifactId>explore-with-me-stats</artifactId>
+        <groupId>ru.yandex.practicum</groupId>
+        <artifactId>stats</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>stats-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Explore With Me Stats Server</name>
+<!--    <name>Explore With Me Stats Server</name>-->
 
     <dependencies>
 	    <dependency>
-            <groupId>ru.practicum</groupId>
+            <groupId>ru.yandex.practicum</groupId>
             <artifactId>stats-dto</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -101,8 +113,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
