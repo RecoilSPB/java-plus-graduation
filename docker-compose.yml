@@ -1,22 +1,11 @@
 services:
-#  stats-server:
-#    build: stats/stats-server
-#    image: stats-server
-#    container_name: stats-server
-#    ports:
-#      - "9090:9090"
-#    depends_on:
-#      - stats-db
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-stats:5432/explore-stats
-#      - SPRING_DATASOURCE_USERNAME=explore-stats
-#      - SPRING_DATASOURCE_PASSWORD=explore-stats
-
   stats-db:
     image: postgres:16.1
     container_name: explore-postgres-stats
     ports:
       - "6432:5432"
+    networks:
+      - ewm-net
     environment:
       - POSTGRES_PASSWORD=explore-stats
       - POSTGRES_USER=explore-stats
@@ -27,24 +16,13 @@ services:
       interval: 5s
       retries: 10
 
-#  ewm-service:
-#    build: core/main-server
-#    image: main-server
-#    container_name: ewm-service
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - stats-db
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-postgres-main:5432/explore-main
-#      - SPRING_DATASOURCE_USERNAME=explore-main
-#      - SPRING_DATASOURCE_PASSWORD=explore-main
-
   main-db:
     image: postgres:16.1
     container_name: explore-postgres-main
     ports:
       - "6433:5432"
+    networks:
+      - ewm-net
     environment:
       - POSTGRES_PASSWORD=explore-main
       - POSTGRES_USER=explore-main
@@ -54,3 +32,98 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+
+  discovery-server:
+    build: infra/discovery-server
+    image: discovery-server
+    container_name: discovery-server
+    networks:
+      - ewm-net
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: "curl --fail --silent discovery-server:8761/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  config-server:
+    build: infra/config-server
+    image: config-server
+    container_name: config-server
+    networks:
+      - ewm-net
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/config-server |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://config-server:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  gateway-server:
+    build: infra/gateway-server
+    image: gateway-server
+    container_name: gateway-server
+    networks:
+      - ewm-net
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/gateway-server |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://gateway-server:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      interval: 20s
+      timeout: 5s
+      retries: 10
+
+  stats-server:
+    build: stats/stats-server
+    image: stats-server
+    container_name: stats-server
+    networks:
+      - ewm-net
+    depends_on:
+      stats-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+
+  ewm-service:
+    build: core/main-server
+    image: main-server
+    container_name: ewm-service
+    networks:
+      - ewm-net
+    depends_on:
+      main-db:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+
+networks:
+  ewm-net:
