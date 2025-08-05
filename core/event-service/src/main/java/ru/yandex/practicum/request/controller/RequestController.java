@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.request.dto.EventRequestDto;
+import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.request.service.EventRequestService;
 
 import java.util.List;

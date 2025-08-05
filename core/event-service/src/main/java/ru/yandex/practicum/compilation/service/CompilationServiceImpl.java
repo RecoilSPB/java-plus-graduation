@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.compilation.dto.CompilationMapper;
-import ru.yandex.practicum.compilation.dto.NewCompilationDto;
-import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
-import ru.yandex.practicum.compilation.dto.UpdateCompilationRequest;
+import ru.yandex.practicum.compilation.mapper.CompilationMapper;
+import ru.yandex.practicum.dto.compilation.NewCompilationDto;
+import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
+import ru.yandex.practicum.dto.compilation.UpdateCompilationRequest;
 import ru.yandex.practicum.compilation.model.Compilation;
 import ru.yandex.practicum.compilation.repository.CompilationRepository;
-import ru.yandex.practicum.event.dto.EventMapper;
-import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.mapper.EventMapper;
+import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.NotFoundException;
@@ -33,21 +33,24 @@ public class CompilationServiceImpl implements CompilationService {
     final CompilationRepository compilationRepository;
     final EventRepository eventRepository;
 
+    final CompilationMapper compilationMapper;
+    final EventMapper eventMapper;
+
     @Override
     @Transactional
     public ResponseCompilationDto addCompilation(NewCompilationDto dto) {
-        Compilation compilation = CompilationMapper.mapToCompilation(dto);
+        Compilation compilation = compilationMapper.mapToCompilation(dto);
         if (compilation.getPinned() == null) {
             compilation.setPinned(false);
         }
         List<Event> events = getEventsFromDto(dto);
         compilation.setEvents(events);
-        ResponseCompilationDto responseCompilationDto = CompilationMapper.mapToResponseCompilation(
+        ResponseCompilationDto responseCompilationDto = compilationMapper.mapToResponseCompilation(
                 compilationRepository.save(compilation)
         );
         List<EventShortDto> eventDtos = new ArrayList<>();
         for (Event event : compilation.getEvents()) {
-            eventDtos.add(EventMapper.mapEventToShortDto(event));
+            eventDtos.add(eventMapper.mapEventToShortDto(event));
         }
         responseCompilationDto.setEvents(eventDtos);
 
@@ -67,7 +70,7 @@ public class CompilationServiceImpl implements CompilationService {
         List<Event> events = getEventsFromDto(compilation);
         update.setEvents(events == null ? old.getEvents() : events);
 
-        return CompilationMapper.mapToResponseCompilation(compilationRepository.save(update));
+        return compilationMapper.mapToResponseCompilation(compilationRepository.save(update));
     }
 
     private List<Event> getEventsFromDto(NewCompilationDto compilation) {
@@ -122,10 +125,10 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     private ResponseCompilationDto compileDtoWithEvents(Compilation compilation) {
-        ResponseCompilationDto result = CompilationMapper.mapToResponseCompilation(compilation);
+        ResponseCompilationDto result = compilationMapper.mapToResponseCompilation(compilation);
         List<EventShortDto> eventDtos = new ArrayList<>();
         for (Event event : compilation.getEvents()) {
-            eventDtos.add(EventMapper.mapEventToShortDto(event));
+            eventDtos.add(eventMapper.mapEventToShortDto(event));
         }
         result.setEvents(eventDtos);
         return result;

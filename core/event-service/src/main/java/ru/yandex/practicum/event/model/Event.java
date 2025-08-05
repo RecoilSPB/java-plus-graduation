@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.compilation.model.Compilation;
-import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.dto.event.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,8 +39,7 @@ public class Event {
     @Column(nullable = false, name = "event_date")
     LocalDateTime eventDate;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    User initiator;
+    Long initiatorId;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     Location location;

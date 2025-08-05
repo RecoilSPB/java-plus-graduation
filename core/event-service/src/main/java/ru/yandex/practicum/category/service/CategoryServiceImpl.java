@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.category.dto.CategoryDto;
-import ru.yandex.practicum.category.dto.CategoryMapper;
+import ru.yandex.practicum.dto.category.CategoryDto;
+import ru.yandex.practicum.category.mapper.CategoryMapper;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.event.repository.EventRepository;
@@ -26,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     final CategoryRepository categoryRepository;
     final EventRepository eventRepository;
+    final CategoryMapper categoryMapper;
 
     @Override
     @Transactional
@@ -33,8 +34,8 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.existsByName(categoryDto.getName())) {
             throw new ConflictException("Такая категория событий уже существует");
         }
-        var category = categoryRepository.save(CategoryMapper.mapCategoryDto(categoryDto));
-        return CategoryMapper.mapCategory(category);
+        var category = categoryRepository.save(categoryMapper.mapCategoryDto(categoryDto));
+        return categoryMapper.mapCategory(category);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryDto.getName());
         Category updatedCategory = categoryRepository.save(category);
 
-        return CategoryMapper.mapCategory(updatedCategory);
+        return categoryMapper.mapCategory(updatedCategory);
     }
 
 
@@ -68,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Указанная категория не найдена " + catId));
 
-        return CategoryMapper.mapCategory(category);
+        return categoryMapper.mapCategory(category);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll(PageRequest.of(from / size, size))
                 .getContent()
                 .stream()
-                .map(CategoryMapper::mapCategory)
+                .map(categoryMapper::mapCategory)
                 .collect(Collectors.toList());
     }
 

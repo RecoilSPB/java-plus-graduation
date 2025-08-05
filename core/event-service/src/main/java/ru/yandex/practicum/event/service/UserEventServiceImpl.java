@@ -10,9 +10,10 @@ import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.dto.StatsRequestParamsDto;
-import ru.yandex.practicum.event.dto.*;
+import ru.yandex.practicum.dto.event.*;
+import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.model.StateAction;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.event.repository.LocationRepository;
@@ -44,6 +45,7 @@ public class UserEventServiceImpl implements UserEventService {
     final LocationRepository locationRepository;
 
     final StatsClient statsClient;
+    final EventMapper eventMapper;
 
     private static void validationEventDate(Event event) throws ValidationException, WrongDataException {
         if (LocalDateTime.now().isAfter(event.getEventDate().minusHours(1))) {
@@ -78,11 +80,11 @@ public class UserEventServiceImpl implements UserEventService {
                 () -> new NotFoundException("Категория не найдена " + eventDto.getCategory())
         );
 
-        Event event = EventMapper.mapNewEventDtoToEvent(eventDto, category);
+        Event event = eventMapper.mapNewEventDtoToEvent(eventDto, category);
 
         locationRepository.save(event.getLocation());
 
-        event.setInitiator(user);
+        event.setInitiatorId(userId);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventState.PENDING);
 
@@ -101,7 +103,7 @@ public class UserEventServiceImpl implements UserEventService {
         event = eventRepository.save(event);
         log.info("Событие сохранено {}", event.getId());
 
-        return EventMapper.mapEventToFullDto(event, confirmedRequests);
+        return eventMapper.mapEventToFullDto(event, confirmedRequests);
     }
 
     @Override
@@ -122,7 +124,7 @@ public class UserEventServiceImpl implements UserEventService {
         locationRepository.save(event.getLocation());
         eventRepository.save(event);
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return getViewsCounter(EventMapper.mapEventToFullDto(event, confirmed));
+        return getViewsCounter(eventMapper.mapEventToFullDto(event, confirmed));
     }
 
     private User getUserById(Long userId) throws NotFoundException {
@@ -134,7 +136,7 @@ public class UserEventServiceImpl implements UserEventService {
     public List<EventShortDto> getUserEvents(Long userId, Integer from, Integer count) throws NotFoundException {
         User user = getUserById(userId);
         return eventRepository.findAllByInitiator(user, PageRequest.of(from / count, count)).stream()
-                .map(EventMapper::mapEventToShortDto)
+                .map(eventMapper::mapEventToShortDto)
                 .collect(Collectors.toList());
     }
 
@@ -148,7 +150,7 @@ public class UserEventServiceImpl implements UserEventService {
             throw new ValidationException("Пользователь " + userId + " не является инициатором события " + eventId);
         }
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return getViewsCounter(EventMapper.mapEventToFullDto(event, confirmed));
+        return getViewsCounter(eventMapper.mapEventToFullDto(event, confirmed));
     }
 
     Event getEventById(Long eventId) throws NotFoundException {

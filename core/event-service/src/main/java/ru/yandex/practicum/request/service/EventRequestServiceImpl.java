@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.request.dto.EventRequestDto;
-import ru.yandex.practicum.request.dto.EventRequestMapper;
+import ru.yandex.practicum.dto.request.EventRequestDto;
+import ru.yandex.practicum.request.mapper.EventRequestMapper;
 import ru.yandex.practicum.request.model.EventRequest;
 import ru.yandex.practicum.request.repository.RequestRepository;
 import ru.yandex.practicum.user.model.User;
@@ -43,7 +43,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         User user = userRepository.getUserById(userId);
         Event event = getEventById(eventId);
 
-        if (event.getInitiator().getId().equals(userId)) {
+        if (event.getInitiatorId().equals(userId)) {
             throw new ConflictException("Создатель события не может подать заявку на участие");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
@@ -54,7 +54,7 @@ public class EventRequestServiceImpl implements EventRequestService {
             throw new ConflictException("Превышен лимит заявок на участие в событии");
         }
         for (EventRequest request : requests) {
-            if (request.getRequester().getId().equals(userId)) {
+            if (request.getRequesterId().equals(userId)) {
                 throw new ConflictException("Повторная заявка на участие в событии");
             }
         }
@@ -153,7 +153,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         EventRequest request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException("Запрос не существует")
         );
-        if (!request.getRequester().getId().equals(userId)) {
+        if (!request.getRequesterId().equals(userId)) {
             throw new ValidationException("Создатель заявки не userId=" + userId);
         }
         request.setStatus(CANCELED_REQUEST);
@@ -162,7 +162,7 @@ public class EventRequestServiceImpl implements EventRequestService {
 
     private EventRequest createNewEventRequest(User user, Event event) {
         EventRequest newRequest = new EventRequest();
-        newRequest.setRequester(user);
+        newRequest.setRequesterId(user);
         newRequest.setCreated(LocalDateTime.now());
         if (event.getParticipantLimit() == 0) {
             newRequest.setStatus(CONFIRMED_REQUEST);
@@ -187,7 +187,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     private List<EventRequest> getEventRequests(Long userId, Long eventId) throws ValidationException, NotFoundException {
         User user = userRepository.getUserById(userId);
         Event event = getEventById(eventId);
-        if (!user.getId().equals(event.getInitiator().getId())) {
+        if (!user.getId().equals(event.getInitiatorId())) {
             throw new ValidationException("Пользователь не инициатор события c id=" + eventId);
         }
         return requestRepository.findByEventInitiatorId(userId);

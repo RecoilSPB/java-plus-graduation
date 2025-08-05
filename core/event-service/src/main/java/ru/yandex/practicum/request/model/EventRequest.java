@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 
@@ -21,8 +20,7 @@ public class EventRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    User requester;
+    Long requesterId;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     Event event;

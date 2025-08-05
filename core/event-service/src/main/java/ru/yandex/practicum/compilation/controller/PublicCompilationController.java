@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
+import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
 import ru.yandex.practicum.compilation.service.CompilationService;
 import ru.yandex.practicum.exception.NotFoundException;
 
