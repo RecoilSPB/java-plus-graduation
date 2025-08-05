@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.request.dto.EventRequestDto;
-import ru.yandex.practicum.request.dto.EventRequestMapper;
+import ru.yandex.practicum.dto.request.EventRequestDto;
+import ru.yandex.practicum.dto.request.EventRequestMapper;
 import ru.yandex.practicum.request.model.EventRequest;
 import ru.yandex.practicum.request.repository.RequestRepository;
 import ru.yandex.practicum.user.model.User;
@@ -162,7 +162,7 @@ public class EventRequestServiceImpl implements EventRequestService {
 
     private EventRequest createNewEventRequest(User user, Event event) {
         EventRequest newRequest = new EventRequest();
-        newRequest.setRequester(user);
+        newRequest.setRequesterId(user);
         newRequest.setCreated(LocalDateTime.now());
         if (event.getParticipantLimit() == 0) {
             newRequest.setStatus(CONFIRMED_REQUEST);

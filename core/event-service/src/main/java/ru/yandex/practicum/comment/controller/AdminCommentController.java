@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.comment.dto.CommentDto;
-import ru.yandex.practicum.comment.dto.GetCommentsAdminRequest;
+import ru.yandex.practicum.dto.comment.CommentDto;
+import ru.yandex.practicum.dto.comment.GetCommentsAdminRequest;
 import ru.yandex.practicum.comment.service.CommentService;
 import ru.yandex.practicum.exception.NotFoundException;
 

@@ -21,8 +21,7 @@ public class EventRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    User requester;
+    Long requesterId;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     Event event;

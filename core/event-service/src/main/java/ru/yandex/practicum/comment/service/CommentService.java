@@ -1,7 +1,7 @@
 package ru.yandex.practicum.comment.service;
 
-import ru.yandex.practicum.comment.dto.GetCommentsAdminRequest;
-import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.dto.comment.GetCommentsAdminRequest;
+import ru.yandex.practicum.dto.comment.CommentDto;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 

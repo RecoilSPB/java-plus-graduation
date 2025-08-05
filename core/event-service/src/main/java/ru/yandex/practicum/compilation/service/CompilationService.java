@@ -1,8 +1,8 @@
 package ru.yandex.practicum.compilation.service;
 
-import ru.yandex.practicum.compilation.dto.NewCompilationDto;
-import ru.yandex.practicum.compilation.dto.ResponseCompilationDto;
-import ru.yandex.practicum.compilation.dto.UpdateCompilationRequest;
+import ru.yandex.practicum.dto.compilation.NewCompilationDto;
+import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
+import ru.yandex.practicum.dto.compilation.UpdateCompilationRequest;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
 

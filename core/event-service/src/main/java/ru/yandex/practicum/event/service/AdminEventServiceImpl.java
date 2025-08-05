@@ -9,11 +9,11 @@ import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.client.StatsClientImpl;
 import ru.yandex.practicum.dto.StatsRequestParamsDto;
-import ru.yandex.practicum.event.dto.EventFullDto;
-import ru.yandex.practicum.event.dto.EventMapper;
-import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
+import ru.yandex.practicum.dto.event.EventFullDto;
+import ru.yandex.practicum.event.mapper.EventMapper;
+import ru.yandex.practicum.dto.event.UpdateEventAdminRequest;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.model.StateAction;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.event.repository.LocationRepository;
@@ -40,6 +40,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     final LocationRepository locationRepository;
 
     final StatsClientImpl statsClient;
+
+    final EventMapper eventMapper;
 
     private static StatsRequestParamsDto getStatsRequestParamsDto(LocalDateTime start, Optional<LocalDateTime> end, ArrayList<String> urls) {
         return StatsRequestParamsDto.builder()
@@ -73,10 +75,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             List<EventRequest> requestsByEventIds = requestRepository.findByEventIds(allEventsWithDates.stream()
                     .mapToLong(Event::getId).boxed().collect(Collectors.toList()));
             eventDtos = allEventsWithDates.stream()
-                    .map(e -> EventMapper.mapEventToFullDto(e,
-                            requestsByEventIds.stream()
-                                    .filter(r -> r.getEvent().getId().equals(e.getId()))
-                                    .count()))
+                    .map(eventMapper::mapEventToFullDto)
                     .toList();
         } else {
             List<Event> allEventsWithDates = eventRepository.findAllEventsWithDates(users,
@@ -86,10 +85,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             List<EventRequest> requestsByEventIds = requestRepository.findByEventIds(allEventsWithDates.stream()
                     .mapToLong(Event::getId).boxed().collect(Collectors.toList()));
             eventDtos = allEventsWithDates.stream()
-                    .map(e -> EventMapper.mapEventToFullDto(e,
-                            requestsByEventIds.stream()
-                                    .filter(r -> r.getEvent().getId().equals(e.getId()))
-                                    .count()))
+                    .map(eventMapper::mapEventToFullDto)
                     .toList();
         }
 
@@ -156,7 +152,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     EventFullDto getEventFullDto(Event event) {
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return EventMapper.mapEventToFullDto(event, confirmed);
+        return eventMapper.mapEventToFullDto(event);
     }
 
     Event getEventById(Long eventId) throws NotFoundException {

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.category.dto.CategoryDto;
+import ru.yandex.practicum.dto.category.CategoryDto;
 import ru.yandex.practicum.category.service.CategoryService;
 import ru.yandex.practicum.exception.NotFoundException;
 

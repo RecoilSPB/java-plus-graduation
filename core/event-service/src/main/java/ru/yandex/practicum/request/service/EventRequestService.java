@@ -3,7 +3,7 @@ package ru.yandex.practicum.request.service;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.request.dto.EventRequestDto;
+import ru.yandex.practicum.dto.request.EventRequestDto;
 
 import java.util.List;
 

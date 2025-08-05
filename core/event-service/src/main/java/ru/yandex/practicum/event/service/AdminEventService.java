@@ -1,7 +1,7 @@
 package ru.yandex.practicum.event.service;
 
-import ru.yandex.practicum.event.dto.EventFullDto;
-import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
+import ru.yandex.practicum.dto.event.EventFullDto;
+import ru.yandex.practicum.dto.event.UpdateEventAdminRequest;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
