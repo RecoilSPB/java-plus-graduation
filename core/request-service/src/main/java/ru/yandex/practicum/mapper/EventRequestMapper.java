@@ -1,18 +1,18 @@
 package ru.yandex.practicum.mapper;
 
-import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapping;
+import ru.yandex.practicum.dto.request.EventRequestCountDto;
 import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.model.EventRequest;
-
-import java.util.List;
+import ru.yandex.practicum.model.EventRequestCount;
 
 @Mapper(componentModel = "spring")
 public interface EventRequestMapper {
 
+    @Mapping(target = "requester", source = "requesterId")
+    @Mapping(target = "event", source = "eventId")
     EventRequestDto mapRequest(EventRequest request);
 
-    EventRequestDto mapRequestWithConfirmedAndRejected(List<EventRequestDto> confirmedRequests,
-                                                              List<EventRequestDto> rejectedRequests);
+    EventRequestCountDto mapRequest(EventRequestCount requestCount);
 }

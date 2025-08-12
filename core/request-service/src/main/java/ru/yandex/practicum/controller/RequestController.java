@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.request.EventRequestDto;
-import ru.yandex.practicum.service.EventRequestService;
+import ru.yandex.practicum.facade.EventRequestFacade;
 
 import java.util.List;
 
@@ -13,36 +13,23 @@ import java.util.List;
 @RequestMapping("/users/{userId}")
 public class RequestController {
 
-    final EventRequestService requestService;
+    final EventRequestFacade requestFacade;
 
     @PostMapping("/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public EventRequestDto addEventRequest(@PathVariable Long userId,
                                            @RequestParam Long eventId) {
-        return requestService.addRequest(userId, eventId);
+        return requestFacade.addRequest(userId, eventId);
     }
 
     @GetMapping("/requests")
     public List<EventRequestDto> getUserRequests(@PathVariable Long userId) {
-        return requestService.getUserRequests(userId);
-    }
-
-    @GetMapping("/events/{eventId}/requests")
-    public List<EventRequestDto> getRequestsByEventId(@PathVariable Long userId,
-                                                      @PathVariable Long eventId) {
-        return requestService.getRequestsByEventId(userId, eventId);
-    }
-
-    @PatchMapping("/events/{eventId}/requests")
-    public EventRequestDto updateRequest(@PathVariable Long userId,
-                                         @PathVariable Long eventId,
-                                         @RequestBody EventRequestDto request) {
-        return requestService.updateRequest(userId, eventId, request);
+        return requestFacade.getUserRequests(userId);
     }
 
     @PatchMapping("/requests/{requestId}/cancel")
     public EventRequestDto cancelRequest(@PathVariable Long userId,
                                          @PathVariable Long requestId) {
-        return requestService.cancelRequest(userId, requestId);
+        return requestFacade.cancelRequest(userId, requestId);
     }
 }
