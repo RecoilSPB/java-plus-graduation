@@ -3,6 +3,7 @@ package ru.yandex.practicum.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.yandex.practicum.dto.request.EventRequestStatus;
 
 import java.time.LocalDateTime;
 
@@ -25,5 +26,6 @@ public class EventRequest {
 
     LocalDateTime created;
 
-    String status;
+    @Enumerated(EnumType.STRING)
+    EventRequestStatus status;
 }

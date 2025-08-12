@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.util.JsonFormatPattern;
+import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +26,6 @@ public class CommentDto {
     @Size(min = 1, max = 5000)
     @NotBlank
     String content;
-    @JsonFormat(pattern = JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME)
+    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_FORMAT)
     LocalDateTime created;
 }

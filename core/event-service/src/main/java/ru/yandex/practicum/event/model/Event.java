@@ -41,8 +41,7 @@ public class Event {
 
     Long initiatorId;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    Location location;
+    Long locationId;
 
     @Column
     Boolean paid;

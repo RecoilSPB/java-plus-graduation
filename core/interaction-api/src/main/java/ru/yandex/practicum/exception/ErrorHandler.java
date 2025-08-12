@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 @Slf4j
@@ -16,31 +17,44 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        String errorMessage = e.getBindingResult().getAllErrors().getFirst().getDefaultMessage();
-        assert errorMessage != null;
+        String errorMessage = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
         Map<String, String> error = Map.of("error", errorMessage);
         log.warn("Validation error: {}", errorMessage);
         return error;
     }
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleWrongData(final ValidationException e) {
-        log.error("Validation error: " + e.getMessage());
+    public Map<String, String> handleValidationException(final ValidationException e) {
+        log.warn("Validation error: {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleWrongData(final NotFoundException e) {
-        log.error("Not found: " + e.getMessage());
+    public Map<String, String> handleNotFoundException(final NotFoundException e) {
+        log.warn("Not found: {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler(ConflictException.class)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleWrongData(final ConflictException e) {
-        log.error("Conflict: " + e.getMessage());
+    public Map<String, String> handleConflictException(final ConflictException e) {
+        log.warn("Conflict: {}", e.getMessage());
         return Map.of("message", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleLocationProcessingException(final LocationProcessingException e) {
+        log.error("Location processing failed: {}", e.getMessage());
+        return Map.of("error", "Location processing error: " + e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleAllExceptions(final Exception e) {
+        log.error("Internal server error: {}", e.getMessage(), e);
+        return Map.of("error", "Internal server error");
     }
 }

@@ -7,10 +7,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.user.UserShortDto;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.service.UserService;
 import ru.yandex.practicum.dto.user.UserDto;
+import ru.yandex.practicum.dto.user.UserShortDto;
+import ru.yandex.practicum.service.UserService;
 
 import java.util.List;
 
@@ -24,14 +23,14 @@ public class AdminUserController {
 
     @GetMapping
     public List<UserShortDto> getUsersList(@RequestParam(required = false) List<Long> ids,
-                                               @RequestParam(required = false, defaultValue = "0") Integer from,
-                                               @RequestParam(required = false, defaultValue = "10") Integer size) {
+                                           @RequestParam(required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(required = false, defaultValue = "10") Integer size) {
         return userService.getUsersByIdList(ids, PageRequest.of(from, size));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@Valid @RequestBody UserDto newUser) throws ConflictException {
+    public UserDto addUser(@Valid @RequestBody UserDto newUser) {
         return userService.addUser(newUser);
     }
 

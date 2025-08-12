@@ -58,7 +58,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public ResponseCompilationDto updateCompilation(Long compId, UpdateCompilationRequest compilation) throws NotFoundException {
+    public ResponseCompilationDto updateCompilation(Long compId, UpdateCompilationRequest compilation) {
         Compilation old = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Указанная подборка не найдена " + compId));
 
@@ -91,7 +91,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public ResponseCompilationDto getCompilationById(Long id) throws NotFoundException {
+    public ResponseCompilationDto getCompilationById(Long id) {
         log.info("Получение информации о подборке, id={}", id);
         Compilation compilation = compilationRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Подборка не найдена " + id)
@@ -107,7 +107,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public void deleteCompilation(Long id) throws ValidationException, NotFoundException {
+    public void deleteCompilation(Long id) {
         Compilation compilation = compilationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Указанная категория не найдена " + id));
         try {

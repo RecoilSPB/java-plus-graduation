@@ -9,12 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.dto.event.NewEventDto;
-import ru.yandex.practicum.dto.event.UpdateEventUserRequestDto;
-import ru.yandex.practicum.event.service.UserEventService;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.exception.WrongDataException;
+import ru.yandex.practicum.dto.event.UpdateEventUserDto;
+import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
 
@@ -24,32 +20,33 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PrivateEventController {
 
-    final UserEventService eventService;
-
-    @GetMapping
-    public List<EventShortDto> getUserEvents(@PathVariable Long userId,
-                                             @RequestParam(defaultValue = "0") Integer from,
-                                             @RequestParam(defaultValue = "10") Integer count) throws NotFoundException {
-        return eventService.getUserEvents(userId, from, count);
-    }
+    final EventFacade eventFacade;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable Long userId,
-                                 @Valid @RequestBody NewEventDto event) throws ValidationException, WrongDataException, NotFoundException {
-        return eventService.addEvent(userId, event);
+                                 @Valid @RequestBody NewEventDto event) {
+        return eventFacade.addEvent(userId, event);
     }
+
+    @GetMapping
+    public List<EventShortDto> getUserEvents(@PathVariable Long userId,
+                                             @RequestParam(defaultValue = "0") Integer from,
+                                             @RequestParam(defaultValue = "10") Integer count) {
+        return eventFacade.getEventsByUserId(userId, from, count);
+    }
+
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable Long userId,
-                                     @PathVariable Long eventId) throws ValidationException, NotFoundException {
-        return eventService.getEventById(userId, eventId);
+                                     @PathVariable Long eventId) {
+        return eventFacade.getEventById(userId, eventId);
     }
 
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable Long userId,
                                     @PathVariable Long eventId,
-                                    @Valid @RequestBody UpdateEventUserRequestDto event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
-        return eventService.updateEvent(userId, eventId, event);
+                                    @Valid @RequestBody UpdateEventUserDto event) {
+        return eventFacade.updateEvent(userId, eventId, event);
     }
 }

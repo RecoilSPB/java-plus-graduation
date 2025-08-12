@@ -12,7 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.StatsServer;
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.service.StatsService;
 
@@ -36,16 +36,16 @@ class StatsControllerTest {
     @MockBean
     private StatsService statsService;
 
-    private StatsRequestDto statsRequestDto;
+    private StatsDto statsDto;
     private StatsResponseDto statsResponseDto;
 
     @BeforeEach
     void setUp() {
-        statsRequestDto = new StatsRequestDto();
-        statsRequestDto.setUri("/test");
-        statsRequestDto.setApp("test-app");
-        statsRequestDto.setIp("192.168.1.1");
-        statsRequestDto.setTimestamp(LocalDateTime.now());
+        statsDto = new StatsDto();
+        statsDto.setUri("/test");
+        statsDto.setApp("test-app");
+        statsDto.setIp("192.168.1.1");
+        statsDto.setTimestamp(LocalDateTime.now());
 
         statsResponseDto = new StatsResponseDto();
         statsResponseDto.setApp("test-app");
@@ -72,7 +72,7 @@ class StatsControllerTest {
 
     @Test
     void save_shouldReturnSavedHit() throws Exception {
-        Mockito.when(statsService.save(any(StatsRequestDto.class))).thenReturn(statsRequestDto);
+        Mockito.when(statsService.save(any(StatsDto.class))).thenReturn(statsDto);
 
         mockMvc.perform(post("/hit")
                         .contentType(MediaType.APPLICATION_JSON)

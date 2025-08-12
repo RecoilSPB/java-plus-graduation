@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.service.StatsService;
 
@@ -40,8 +40,8 @@ public class StatsController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public StatsRequestDto save(@RequestBody @Valid StatsRequestDto statsRequestDto) {
-        log.info("Получен запрос на добавление статистики: StatsRequestDto: {}", statsRequestDto);
-        return statsService.save(statsRequestDto);
+    public StatsDto save(@RequestBody @Valid StatsDto statsDto) {
+        log.info("Получен запрос на добавление статистики: StatsRequestDto: {}", statsDto);
+        return statsService.save(statsDto);
     }
 }

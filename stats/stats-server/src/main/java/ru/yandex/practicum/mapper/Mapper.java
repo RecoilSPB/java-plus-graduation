@@ -1,13 +1,13 @@
 package ru.yandex.practicum.mapper;
 
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.model.Requests;
 import ru.yandex.practicum.model.Response;
 
 public class Mapper {
-    public static StatsRequestDto toRequestDto(Requests request) {
-        StatsRequestDto statsDto = new StatsRequestDto();
+    public static StatsDto toRequestDto(Requests request) {
+        StatsDto statsDto = new StatsDto();
         statsDto.setIp(request.getIp());
         statsDto.setApp(request.getApplication());
         statsDto.setUri(request.getUri());
@@ -15,7 +15,7 @@ public class Mapper {
         return statsDto;
     }
 
-    public static Requests toRequest(StatsRequestDto requestDto) {
+    public static Requests toRequest(StatsDto requestDto) {
         Requests request = new Requests();
         request.setIp(requestDto.getIp());
         request.setApplication(requestDto.getApp());

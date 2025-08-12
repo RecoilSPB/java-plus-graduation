@@ -4,8 +4,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
-import ru.yandex.practicum.exception.DataRetrievalException;
-import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.List;
 
@@ -16,10 +14,8 @@ public interface LocationClient {
     LocationDto addOrGetLocation(@RequestBody NewLocationDto newLocationDto);
 
     @GetMapping
-    List<LocationDto> getByRadius(@RequestParam(name = "latitude") Double lat,
-                                  @RequestParam(name = "longitude") Double lon,
-                                  @RequestParam(name = "radius") Double radius) throws DataRetrievalException;
+    List<LocationDto> getByRadius(@RequestParam(name = "latitude") Double lat, @RequestParam(name = "longitude") Double lon, @RequestParam(name = "radius") Double radius);
 
     @GetMapping("/{locationId}")
-    LocationDto getById(@PathVariable Long locationId) throws NotFoundException;
+    LocationDto getById(@PathVariable Long locationId);
 }

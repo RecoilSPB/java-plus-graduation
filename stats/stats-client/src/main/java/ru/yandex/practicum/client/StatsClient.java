@@ -1,14 +1,14 @@
 package ru.yandex.practicum.client;
 
-import ru.yandex.practicum.dto.StatsRequestDto;
-import ru.yandex.practicum.dto.StatsRequestParamsDto;
+import ru.yandex.practicum.dto.StatsDto;
+import ru.yandex.practicum.dto.StatsParamsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface StatsClient {
 
-    Collection<StatsResponseDto> getAllStats(StatsRequestParamsDto statsRequestParamsDto);
+    List<StatsResponseDto> getAllStats(StatsParamsDto statsParamsDto);
 
-    void postStats(StatsRequestDto statsRequestDto);
+    void postStats(StatsDto statsDto);
 }

@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.category.CategoryDto;
 import ru.yandex.practicum.category.service.CategoryService;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.dto.category.CategoryDto;
 
 
 @RestController
@@ -21,19 +19,19 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategory(@Valid @RequestBody CategoryDto newCategory) throws ConflictException {
+    public CategoryDto addCategory(@Valid @RequestBody CategoryDto newCategory) {
         return categoryService.addCategory(newCategory);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable Long catId,
-                                      @Valid @RequestBody CategoryDto categoryDto) throws ConflictException, NotFoundException {
+                                      @Valid @RequestBody CategoryDto categoryDto) {
         return categoryService.updateCategory(catId, categoryDto);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable Long catId) throws ConflictException, NotFoundException {
+    public void deleteCategory(@PathVariable Long catId) {
         categoryService.deleteCategory(catId);
     }
 }

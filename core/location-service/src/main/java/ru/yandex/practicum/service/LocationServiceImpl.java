@@ -41,7 +41,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationDto getById(Long locationId) throws NotFoundException {
+    public LocationDto getById(Long locationId) {
         log.info("getById params: id = {}", locationId);
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(
@@ -62,7 +62,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     @Transactional
     public LocationDto updateLocation(Long locationId,
-                                      AdminLocationUpdateDto adminLocationUpdateDto) throws NotFoundException {
+                                      AdminLocationUpdateDto adminLocationUpdateDto) {
         log.info("Updating location with ID: {}, new data: {}", locationId, adminLocationUpdateDto);
 
         // Находим существующую локацию или выбрасываем исключение
@@ -105,7 +105,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) throws DataRetrievalException {
+    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) {
         log.debug("Fetching locations within radius - lat: {}, lon: {}, radius: {}", lat, lon, radius);
 
         try {
@@ -131,7 +131,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     @Transactional
-    public void delete(Long locationId) throws ConflictException {
+    public void delete(Long locationId) {
         List<EventFullDto> events = eventClient.getByLocation(locationId);
         if (!events.isEmpty()) {
             throw new ConflictException("location is used in events");

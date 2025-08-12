@@ -1,12 +1,11 @@
 package ru.yandex.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.client.LocationClient;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
-import ru.yandex.practicum.exception.DataRetrievalException;
-import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.service.LocationService;
 
 import java.util.List;
@@ -23,12 +22,12 @@ public class ClientController implements LocationClient {
     }
 
     @Override
-    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) throws DataRetrievalException {
+    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) {
         return locationService.getByRadius(lat, lon, radius);
     }
 
     @Override
-    public LocationDto getById(Long locationId) throws NotFoundException {
+    public LocationDto getById(Long locationId) {
         return locationService.getById(locationId);
     }
 }

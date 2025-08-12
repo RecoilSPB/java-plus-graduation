@@ -7,12 +7,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
-import ru.yandex.practicum.dto.event.UpdateEventAdminRequestDto;
-import ru.yandex.practicum.event.service.AdminEventService;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.exception.WrongDataException;
+import ru.yandex.practicum.dto.event.UpdateEventAdminDto;
+import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +21,7 @@ import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FO
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminEventController {
 
-    final AdminEventService eventService;
+    final EventFacade eventFacade;
 
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
@@ -34,13 +30,13 @@ public class AdminEventController {
                                         @DateTimeFormat(pattern = JSON_FORMAT_PATTERN_FOR_TIME) @RequestParam(required = false) LocalDateTime rangeStart,
                                         @DateTimeFormat(pattern = JSON_FORMAT_PATTERN_FOR_TIME) @RequestParam(required = false) LocalDateTime rangeEnd,
                                         @RequestParam(required = false, defaultValue = "0") Integer from,
-                                        @RequestParam(required = false, defaultValue = "10") Integer size) throws ValidationException {
-        return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+                                        @RequestParam(required = false, defaultValue = "10") Integer size) {
+        return eventFacade.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable Long eventId,
-                                    @Valid @RequestBody UpdateEventAdminRequestDto event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
-        return eventService.updateEvent(eventId, event);
+                                    @Valid @RequestBody UpdateEventAdminDto event) {
+        return eventFacade.updateEvent(eventId, event);
     }
 }

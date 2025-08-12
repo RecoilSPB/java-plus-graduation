@@ -6,25 +6,19 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.dto.event.EventState;
-import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.mapper.EventRequestMapper;
 import ru.yandex.practicum.model.EventRequest;
 import ru.yandex.practicum.repository.RequestRepository;
-import ru.yandex.practicum.user.model.User;
-import ru.yandex.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.yandex.practicum.model.EventRequestStatus.*;
 
 @Service
 @Slf4j

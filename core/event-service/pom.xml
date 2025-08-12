@@ -17,12 +17,12 @@
     <dependencies>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
-            <artifactId>stats-client</artifactId>
+            <artifactId>interaction-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
-            <artifactId>interaction-api</artifactId>
+            <artifactId>stats-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

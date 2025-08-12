@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.yandex.practicum.dto.StatsRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -16,7 +15,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class StatsRequestDtoTest {
+class StatsDtoTest {
     private Validator validator;
 
     @BeforeEach
@@ -28,9 +27,9 @@ class StatsRequestDtoTest {
 
     @Test
     void testValidationFailsWhenAppIsBlank() {
-        StatsRequestDto hitDto = new StatsRequestDto("", "some-uri", "192.168.0.1", LocalDateTime.now());
+        StatsDto hitDto = new StatsDto("", "some-uri", "192.168.0.1", LocalDateTime.now());
 
-        Set<ConstraintViolation<StatsRequestDto>> violations = validator.validate(hitDto);
+        Set<ConstraintViolation<StatsDto>> violations = validator.validate(hitDto);
         assertFalse(violations.isEmpty());
         assertEquals("Идентификатор сервиса для которого записывается информация не должен быть пустым.",
                 violations.iterator().next().getMessage());
@@ -38,9 +37,9 @@ class StatsRequestDtoTest {
 
     @Test
     void testValidationFailsWhenUriIsBlank() {
-        StatsRequestDto hitDto = new StatsRequestDto("app-name", "", "192.168.0.1", LocalDateTime.now());
+        StatsDto hitDto = new StatsDto("app-name", "", "192.168.0.1", LocalDateTime.now());
 
-        Set<ConstraintViolation<StatsRequestDto>> violations = validator.validate(hitDto);
+        Set<ConstraintViolation<StatsDto>> violations = validator.validate(hitDto);
         assertFalse(violations.isEmpty());
         assertEquals("URI для которого был осуществлен запрос не должен быть пустым.",
                 violations.iterator().next().getMessage());
@@ -48,9 +47,9 @@ class StatsRequestDtoTest {
 
     @Test
     void testValidationFailsWhenIpIsBlank() {
-        StatsRequestDto hitDto = new StatsRequestDto("app-name", "some-uri", "", LocalDateTime.now());
+        StatsDto hitDto = new StatsDto("app-name", "some-uri", "", LocalDateTime.now());
 
-        Set<ConstraintViolation<StatsRequestDto>> violations = validator.validate(hitDto);
+        Set<ConstraintViolation<StatsDto>> violations = validator.validate(hitDto);
         assertFalse(violations.isEmpty());
         assertEquals("IP-адрес пользователя, осуществившего запрос не можен быть пустым",
                 violations.iterator().next().getMessage());
@@ -58,15 +57,15 @@ class StatsRequestDtoTest {
 
     @Test
     void testValidationPassesWithValidData() {
-        StatsRequestDto hitDto = new StatsRequestDto("app-name", "some-uri", "192.168.0.1", LocalDateTime.now());
+        StatsDto hitDto = new StatsDto("app-name", "some-uri", "192.168.0.1", LocalDateTime.now());
 
-        Set<ConstraintViolation<StatsRequestDto>> violations = validator.validate(hitDto);
+        Set<ConstraintViolation<StatsDto>> violations = validator.validate(hitDto);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void testCreateHitDtoWithValidData() {
-        StatsRequestDto hitDto = new StatsRequestDto("app-name", "some-uri", "192.168.0.1", LocalDateTime.now());
+        StatsDto hitDto = new StatsDto("app-name", "some-uri", "192.168.0.1", LocalDateTime.now());
 
         assertNotNull(hitDto);
         assertEquals("app-name", hitDto.getApp());

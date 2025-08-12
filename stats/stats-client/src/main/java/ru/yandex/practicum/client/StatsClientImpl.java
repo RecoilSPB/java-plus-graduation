@@ -8,21 +8,20 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.retry.support.RetryTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.MaxAttemptsRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.yandex.practicum.dto.StatsRequestDto;
-import ru.yandex.practicum.dto.StatsRequestParamsDto;
+import ru.yandex.practicum.dto.StatsDto;
+import ru.yandex.practicum.dto.StatsParamsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +32,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class StatsClientImpl implements StatsClient{
+public class StatsClientImpl implements StatsClient {
     private final RestTemplate rest;
     private final DiscoveryClient discoveryClient;
     private final RetryTemplate retryTemplate;
@@ -41,8 +40,8 @@ public class StatsClientImpl implements StatsClient{
 
     @Autowired
     public StatsClientImpl(DiscoveryClient discoveryClient,
-                       @Value("${discovery.services.stats-server-id}") String statsServiceId,
-                       RestTemplateBuilder restTemplateBuilder) {
+                           @Value("${discovery.services.stats-server-id}") String statsServiceId,
+                           RestTemplateBuilder restTemplateBuilder) {
         this.discoveryClient = discoveryClient;
         this.statsServiceId = statsServiceId;
         this.rest = restTemplateBuilder
@@ -60,21 +59,21 @@ public class StatsClientImpl implements StatsClient{
     }
 
     @Override
-    public Collection<StatsResponseDto> getAllStats(StatsRequestParamsDto statsRequestParamsDto) {
-        if (!checkValidRequestParamsDto(statsRequestParamsDto)) {
-            log.error("Get stats was not successful because of incorrect parameters {}", statsRequestParamsDto);
+    public List<StatsResponseDto> getAllStats(StatsParamsDto statsParamsDto) {
+        if (!checkValidRequestParamsDto(statsParamsDto)) {
+            log.error("Get stats was not successful because of incorrect parameters {}", statsParamsDto);
             return List.of();
         }
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("/stats")
-                .queryParam("start", statsRequestParamsDto.getStart().format(JsonFormatPattern.DATE_TIME_FORMATTER))
-                .queryParam("end", statsRequestParamsDto.getEnd().format(JsonFormatPattern.DATE_TIME_FORMATTER));
+                .queryParam("start", statsParamsDto.getStart().format(JsonFormatPattern.DATE_TIME_FORMATTER))
+                .queryParam("end", statsParamsDto.getEnd().format(JsonFormatPattern.DATE_TIME_FORMATTER));
 
-        if (statsRequestParamsDto.getUris() != null && !statsRequestParamsDto.getUris().isEmpty()) {
-            uriComponentsBuilder.queryParam("uris", statsRequestParamsDto.getUris());
+        if (statsParamsDto.getUris() != null && !statsParamsDto.getUris().isEmpty()) {
+            uriComponentsBuilder.queryParam("uris", statsParamsDto.getUris());
         }
-        if (statsRequestParamsDto.getUnique() != null) {
-            uriComponentsBuilder.queryParam("unique", statsRequestParamsDto.getUnique());
+        if (statsParamsDto.getUnique() != null) {
+            uriComponentsBuilder.queryParam("unique", statsParamsDto.getUnique());
         }
         String uri = uriComponentsBuilder.build(false)
                 .encode()
@@ -95,19 +94,19 @@ public class StatsClientImpl implements StatsClient{
         return List.of(Objects.requireNonNull(statServerResponse.getBody()));
     }
 
-    private boolean checkValidRequestParamsDto(StatsRequestParamsDto statsRequestParamsDto) {
-        if (statsRequestParamsDto.getStart() == null || statsRequestParamsDto.getEnd() == null
-                || statsRequestParamsDto.getStart().isAfter(statsRequestParamsDto.getEnd())) {
+    private boolean checkValidRequestParamsDto(StatsParamsDto statsParamsDto) {
+        if (statsParamsDto.getStart() == null || statsParamsDto.getEnd() == null
+                || statsParamsDto.getStart().isAfter(statsParamsDto.getEnd())) {
             return false;
         }
 
-        return statsRequestParamsDto.getUris() != null && !statsRequestParamsDto.getUris().isEmpty()
-                && !statsRequestParamsDto.getUris().stream().allMatch(String::isBlank);
+        return statsParamsDto.getUris() != null && !statsParamsDto.getUris().isEmpty()
+                && !statsParamsDto.getUris().stream().allMatch(String::isBlank);
     }
 
     @Override
-    public void postStats(StatsRequestDto statsRequestDto) {
-        HttpEntity<StatsRequestDto> requestEntity = new HttpEntity<>(statsRequestDto, defaultHeaders());
+    public void postStats(StatsDto statsDto) {
+        HttpEntity<StatsDto> requestEntity = new HttpEntity<>(statsDto, defaultHeaders());
         try {
             rest.exchange(makeUri("/hit"), HttpMethod.POST, requestEntity, Object.class);
         } catch (HttpStatusCodeException e) {

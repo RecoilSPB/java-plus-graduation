@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.mapper.Mapper;
@@ -26,7 +26,7 @@ public class StatsServiceImpl implements StatsService {
     final StatsRepository statsRepository;
 
     @Transactional
-    public StatsRequestDto save(StatsRequestDto requestDto) {
+    public StatsDto save(StatsDto requestDto) {
         log.info("Save request to {}", requestDto);
         try {
             var savedRequest = statsRepository.save(Mapper.toRequest(requestDto));

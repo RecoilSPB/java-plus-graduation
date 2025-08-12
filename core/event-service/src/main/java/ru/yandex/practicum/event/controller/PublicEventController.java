@@ -9,9 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.dto.event.EventShortDto;
-import ru.yandex.practicum.event.service.EventService;
-import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
+import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
 
@@ -21,12 +19,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PublicEventController {
 
-    final EventService eventService;
+    final EventFacade eventFacade;
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Long id,
-                                     HttpServletRequest request) throws NotFoundException {
-        return eventService.getEventById(id, request.getRequestURI(), request.getRemoteAddr());
+                                     HttpServletRequest request) {
+        return eventFacade.getEventById(id, request);
     }
 
     @GetMapping
@@ -39,8 +37,8 @@ public class PublicEventController {
                                                  @RequestParam(required = false, defaultValue = "EVENT_DATE") String sort,
                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                  @Positive @RequestParam(defaultValue = "10") Integer count,
-                                                 HttpServletRequest request) throws ValidationException {
-        return eventService.getFilteredEvents(text, categories, paid, rangeStart, rangeEnd, available, sort, from, count,
+                                                 HttpServletRequest request) {
+        return eventFacade.getFilteredEvents(text, categories, paid, rangeStart, rangeEnd, available, sort, from, count,
                 request.getRequestURI(), request.getRemoteAddr());
     }
 }

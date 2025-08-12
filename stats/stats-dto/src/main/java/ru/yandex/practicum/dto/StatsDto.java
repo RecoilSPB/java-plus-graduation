@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatsRequestDto {
+public class StatsDto {
     @NotBlank(message = "Идентификатор сервиса для которого записывается информация не должен быть пустым.")
     String app;
     @NotBlank(message = "URI для которого был осуществлен запрос не должен быть пустым.")

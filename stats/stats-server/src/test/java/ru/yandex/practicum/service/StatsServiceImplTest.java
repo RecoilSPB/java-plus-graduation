@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
@@ -34,10 +34,10 @@ class StatsServiceImplTest {
     @Test
     void save() {
         LocalDateTime nowTime = LocalDateTime.now();
-        StatsRequestDto requestDto = new StatsRequestDto("application-name", "any-uri", "192.168.0.10", nowTime);
-        StatsRequestDto requestDtoWithNullApplication = new StatsRequestDto(null, "any-uri", "192.168.0.10", nowTime);
-        StatsRequestDto requestDtoWithNullUri = new StatsRequestDto("application-name", null, "192.168.0.10", nowTime);
-        StatsRequestDto requestDtoWithNullIp = new StatsRequestDto("application-name", "any-uri", null, nowTime);
+        StatsDto requestDto = new StatsDto("application-name", "any-uri", "192.168.0.10", nowTime);
+        StatsDto requestDtoWithNullApplication = new StatsDto(null, "any-uri", "192.168.0.10", nowTime);
+        StatsDto requestDtoWithNullUri = new StatsDto("application-name", null, "192.168.0.10", nowTime);
+        StatsDto requestDtoWithNullIp = new StatsDto("application-name", "any-uri", null, nowTime);
 
         assertDoesNotThrow(() -> statsService.save(requestDto));
         assertThrows(ValidationException.class, () -> statsService.save(requestDtoWithNullApplication));
@@ -56,11 +56,11 @@ class StatsServiceImplTest {
     @Test
     void getStats() {
         LocalDateTime nowTime = LocalDateTime.now();
-        StatsRequestDto request1Dto = new StatsRequestDto("application-name", "any-uri", "192.168.0.10", nowTime);
-        StatsRequestDto request2Dto = new StatsRequestDto("application-name", "any-uri", "192.168.0.10", nowTime);
-        StatsRequestDto request3Dto = new StatsRequestDto("application-name", "any-uri2", "192.168.0.10", nowTime);
-        StatsRequestDto request4Dto = new StatsRequestDto("application-name", "any-uri", "192.168.0.11", nowTime);
-        StatsRequestDto request5Dto = new StatsRequestDto("application2-name", "any-uri", "192.168.0.10", nowTime);
+        StatsDto request1Dto = new StatsDto("application-name", "any-uri", "192.168.0.10", nowTime);
+        StatsDto request2Dto = new StatsDto("application-name", "any-uri", "192.168.0.10", nowTime);
+        StatsDto request3Dto = new StatsDto("application-name", "any-uri2", "192.168.0.10", nowTime);
+        StatsDto request4Dto = new StatsDto("application-name", "any-uri", "192.168.0.11", nowTime);
+        StatsDto request5Dto = new StatsDto("application2-name", "any-uri", "192.168.0.10", nowTime);
 
         statsService.save(request1Dto);
         statsService.save(request2Dto);

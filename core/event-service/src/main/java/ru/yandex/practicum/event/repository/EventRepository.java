@@ -4,13 +4,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.dto.event.EventState;
+import ru.yandex.practicum.event.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
+
+    List<Event> findByInitiatorId(Long initiatorId, Pageable page);
+
+    Optional<Event> findByIdAndInitiatorId(Long eventId, Long initiatorId);
+
 
     List<Event> findAllByIdIn(List<Long> ids);
 

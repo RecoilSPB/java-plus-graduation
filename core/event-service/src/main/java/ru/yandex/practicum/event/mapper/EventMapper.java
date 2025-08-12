@@ -53,7 +53,7 @@ public interface EventMapper {
     @Mapping(target = "state", ignore = true)
     @Mapping(target = "publishedOn", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Event update(@MappingTarget Event event, UpdateEventUserRequestDto eventUpdateDto, Long locationId);
+    Event update(@MappingTarget Event event, UpdateEventUserDto eventUpdateDto, Long locationId);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "category")
@@ -62,5 +62,5 @@ public interface EventMapper {
     @Mapping(target = "state", ignore = true)
     @Mapping(target = "publishedOn", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Event update(@MappingTarget Event event, UpdateEventAdminRequestDto eventUpdateDto, Category category, Long locationId);
+    Event update(@MappingTarget Event event, UpdateEventAdminDto eventUpdateDto, Category category, Long locationId);
 }

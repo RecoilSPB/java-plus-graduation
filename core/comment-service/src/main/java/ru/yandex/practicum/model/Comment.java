@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.util.JsonFormatPattern;
+import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +34,6 @@ public class Comment {
     boolean isInitiator;
 
     @Column(name = "created", nullable = false)
-    @JsonFormat(pattern = JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME)
+    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_FORMAT)
     LocalDateTime created;
 }

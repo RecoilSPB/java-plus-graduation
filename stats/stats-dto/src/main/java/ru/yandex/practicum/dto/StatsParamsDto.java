@@ -1,10 +1,5 @@
 package ru.yandex.practicum.dto;
 
-/**
- * @author PopovN
- * @created 09.06.2025 14:09
- **/
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +12,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatsRequestParamsDto {
+public class StatsParamsDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private List<String> uris;
