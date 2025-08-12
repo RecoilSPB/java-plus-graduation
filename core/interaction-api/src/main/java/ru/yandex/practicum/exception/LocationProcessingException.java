@@ -1,6 +1,6 @@
 package ru.yandex.practicum.exception;
 
-public class LocationProcessingException extends Exception {
+public class LocationProcessingException extends RuntimeException {
     public LocationProcessingException(String message) {
         super(message);
     }

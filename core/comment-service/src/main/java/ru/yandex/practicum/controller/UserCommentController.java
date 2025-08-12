@@ -10,8 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.comment.CommentDto;
 import ru.yandex.practicum.service.CommentService;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.exception.NotFoundException;
 
 import java.util.Collection;
 
@@ -29,7 +27,7 @@ public class UserCommentController {
     public CommentDto addComments(
             @PathVariable Long userId,
             @RequestParam @Positive Long eventId,
-            @RequestBody @Validated CommentDto commentDto) throws ConflictException, NotFoundException {
+            @RequestBody @Validated CommentDto commentDto) {
         return service.addComment(commentDto, userId, eventId);
     }
 
@@ -37,7 +35,7 @@ public class UserCommentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(
             @PathVariable @NonNull Long commentId,
-            @PathVariable @NonNull Long userId) throws ConflictException, NotFoundException {
+            @PathVariable @NonNull Long userId) {
         service.delete(userId, commentId);
     }
 
@@ -45,12 +43,12 @@ public class UserCommentController {
     public CommentDto updateComment(
             @PathVariable Long userId,
             @PathVariable Long commentId,
-            @RequestBody @Valid CommentDto commentDto) throws ConflictException, NotFoundException {
+            @RequestBody @Valid CommentDto commentDto) {
         return service.updateUserComment(userId, commentId, commentDto);
     }
 
     @GetMapping
-    public Collection<CommentDto> getByUserComment(@PathVariable Long userId) throws NotFoundException {
+    public Collection<CommentDto> getByUserComment(@PathVariable Long userId) {
         return service.getAllUserComments(userId);
     }
 }

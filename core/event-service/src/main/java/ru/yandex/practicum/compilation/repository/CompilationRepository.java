@@ -7,13 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.compilation.model.Compilation;
 
-import java.util.List;
-
 @Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 
     Page<Compilation> findAll(Pageable page);
 
     @Query("SELECT c FROM Compilation c WHERE (:pinned is null or c.pinned = :pinned)")
-    List<Compilation> findAllWithPinned(Boolean pinned, Pageable page);
+    Page<Compilation> findAllByPinned(Boolean pinned, Pageable page);
 }

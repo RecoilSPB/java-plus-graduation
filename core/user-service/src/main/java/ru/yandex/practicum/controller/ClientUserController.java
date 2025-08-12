@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.client.UserClient;
 import ru.yandex.practicum.dto.user.UserShortDto;
-import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.service.UserService;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class ClientUserController implements UserClient {
 
 
     @Override
-    public UserShortDto getById(Long userId) throws NotFoundException {
+    public UserShortDto getById(Long userId) {
         return userService.getUserById(userId);
     }
 

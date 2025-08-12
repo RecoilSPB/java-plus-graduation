@@ -6,11 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.dto.location.AdminLocationUpdateDto;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
-import ru.yandex.practicum.dto.location.AdminLocationUpdateDto;
-import ru.yandex.practicum.exception.ConflictException;
-import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.service.LocationService;
 
 @RestController
@@ -30,14 +28,14 @@ public class AdminLocationController {
 
     @PatchMapping("/{locationId}")
     public LocationDto updateLocation(@PathVariable(name = "locationId") Long locationId,
-                                      @RequestBody @Valid AdminLocationUpdateDto adminLocationUpdateDto) throws NotFoundException {
+                                      @RequestBody @Valid AdminLocationUpdateDto adminLocationUpdateDto) {
         log.info("PATCH /admin/locations with body({})", adminLocationUpdateDto);
         return locationService.updateLocation(locationId, adminLocationUpdateDto);
     }
 
     @DeleteMapping("/{locationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable(name = "locationId") Long locationId) throws ConflictException {
+    public void delete(@PathVariable(name = "locationId") Long locationId) {
         log.info("DELETE /admin/locations/{locationId} locationId = {})", locationId);
         locationService.delete(locationId);
     }

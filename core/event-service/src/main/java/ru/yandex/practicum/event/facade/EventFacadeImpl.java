@@ -76,7 +76,7 @@ public class EventFacadeImpl implements EventFacade {
         List<Event> events = privateEventService.getUserEvents(id, from, size);
 
         List<EventShortDto> eventsDto = events.stream()
-                .map(event -> eventMapper.mapEventToShortDto(event, user))
+                .map(event -> eventMapper.toShortDto(event, user))
                 .toList();
 
         populateWithConfirmedRequests(events, eventsDto);
@@ -148,15 +148,15 @@ public class EventFacadeImpl implements EventFacade {
     }
 
     @Override
-    public List<EventFullDto> get(EventAdminFilterParamsDto filters, int from, int size) {
+    public List<EventFullDto> getEvents(EventAdminFilterParamsDto filters, int from, int size) {
         return List.of();
     }
 
     @Override
-    public List<EventShortDto> get(EventPublicFilterParamsDto filters,
-                                   int from,
-                                   int size,
-                                   HttpServletRequest request) {
+    public List<EventShortDto> getFilteredEvents(EventPublicFilterParamsDto filters,
+                                                 int from,
+                                                 int size,
+                                                 HttpServletRequest request) {
         return List.of();
     }
 

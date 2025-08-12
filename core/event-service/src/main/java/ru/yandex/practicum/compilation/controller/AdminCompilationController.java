@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.compilation.service.CompilationService;
 import ru.yandex.practicum.dto.compilation.NewCompilationDto;
 import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
-import ru.yandex.practicum.dto.compilation.UpdateCompilationRequest;
+import ru.yandex.practicum.dto.compilation.UpdateCompilationRequestDto;
 
 @RestController
 @RequestMapping("/admin/compilations")
@@ -27,7 +27,7 @@ public class AdminCompilationController {
 
     @PatchMapping("/{compId}")
     public ResponseCompilationDto update(@PathVariable Long compId,
-                                         @Valid @RequestBody UpdateCompilationRequest compilationDto) {
+                                         @Valid @RequestBody UpdateCompilationRequestDto compilationDto) {
         return compilationService.updateCompilation(compId, compilationDto);
     }
 

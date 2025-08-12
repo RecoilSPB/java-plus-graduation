@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateCompilationRequest {
+public class UpdateCompilationRequestDto {
 
     @Size(max = 50)
     String title;

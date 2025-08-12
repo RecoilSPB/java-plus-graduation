@@ -1,10 +1,8 @@
 package ru.yandex.practicum.mapper;
 
-import lombok.experimental.UtilityClass;
 import org.mapstruct.Mapper;
-import ru.yandex.practicum.model.Comment;
 import ru.yandex.practicum.dto.comment.CommentDto;
-import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.model.Comment;
 
 import java.util.List;
 
@@ -15,5 +13,5 @@ public interface CommentMapper {
 
     List<CommentDto> mapToCommentDto(final List<Comment> comments);
 
-    Comment mapTo(final CommentDto comment, final Long userId, final Event event);
+    Comment mapTo(final CommentDto comment, final Long userId, final Long eventId);
 }

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto addUser(UserDto newUserDto) throws ConflictException {
+    public UserDto addUser(UserDto newUserDto) {
         if (userRepository.existsByName(newUserDto.getName())) {
             throw new ConflictException(String.format("Пользователь %s уже существует", newUserDto.getName()));
         }
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserShortDto getUserById(Long userId) throws NotFoundException {
+    public UserShortDto getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(
                 String.format("Пользователь с id = %d не найден", userId))
         );

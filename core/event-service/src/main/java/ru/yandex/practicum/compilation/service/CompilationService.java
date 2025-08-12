@@ -2,14 +2,14 @@ package ru.yandex.practicum.compilation.service;
 
 import ru.yandex.practicum.dto.compilation.NewCompilationDto;
 import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
-import ru.yandex.practicum.dto.compilation.UpdateCompilationRequest;
+import ru.yandex.practicum.dto.compilation.UpdateCompilationRequestDto;
 
 import java.util.List;
 
 public interface CompilationService {
     ResponseCompilationDto addCompilation(NewCompilationDto dto);
 
-    ResponseCompilationDto updateCompilation(Long compId, UpdateCompilationRequest compilation);
+    ResponseCompilationDto updateCompilation(Long compId, UpdateCompilationRequestDto compilation);
 
     ResponseCompilationDto getCompilationById(Long id);
 

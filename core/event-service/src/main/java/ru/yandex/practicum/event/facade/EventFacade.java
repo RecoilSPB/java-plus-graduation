@@ -21,9 +21,9 @@ public interface EventFacade {
 
     EventFullDto getEventById(Long eventId, HttpServletRequest request);
 
-    List<EventFullDto> get(EventAdminFilterParamsDto filters, int from, int size);
+    List<EventFullDto> getEvents(EventAdminFilterParamsDto filters, int from, int size);
 
-    List<EventShortDto> get(EventPublicFilterParamsDto filters, int from, int size, HttpServletRequest request);
+    List<EventShortDto> getFilteredEvents(EventPublicFilterParamsDto filters, int from, int size, HttpServletRequest request);
 
     List<EventRequestDto> getEventAllParticipationRequests(Long eventId, Long userId);
 

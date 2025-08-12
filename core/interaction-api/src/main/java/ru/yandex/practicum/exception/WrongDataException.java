@@ -1,6 +1,6 @@
 package ru.yandex.practicum.exception;
 
-public class WrongDataException extends Exception {
+public class WrongDataException extends RuntimeException {
     public WrongDataException(String message) {
         super(message);
     }

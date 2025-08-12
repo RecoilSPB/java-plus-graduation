@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.location.LocationDto;
-import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.service.LocationService;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class PublicLocationController {
     }
 
     @GetMapping("/{locationId}")
-    public LocationDto getById(@PathVariable Long locationId) throws NotFoundException {
+    public LocationDto getById(@PathVariable Long locationId) {
         log.info("GET /locations/{}", locationId);
         return locationService.getById(locationId);
     }

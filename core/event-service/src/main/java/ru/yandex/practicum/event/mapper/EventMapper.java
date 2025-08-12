@@ -16,7 +16,7 @@ public interface EventMapper {
     @Named(value = "EventShortDto")
     @Mapping(target = "initiator", source = "initiator")
     @Mapping(target = "id", source = "event.id")
-    EventShortDto mapEventToShortDto(Event event, UserShortDto initiator);
+    EventShortDto toShortDto(Event event, UserShortDto initiator);
 
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "views", ignore = true)
