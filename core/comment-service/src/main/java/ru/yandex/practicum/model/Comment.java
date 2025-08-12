@@ -1,15 +1,12 @@
 package ru.yandex.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.util.JsonFormatPattern;
 
 import java.time.LocalDateTime;
-
-import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
 @Entity
 @Getter
@@ -28,10 +25,7 @@ public class Comment {
 
     Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "event_id", nullable = false)
-    @JsonIgnore
-    Event event;
+    Long eventId;
 
     @Column(nullable = false, length = 5000)
     String content;

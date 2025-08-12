@@ -11,7 +11,7 @@ import ru.yandex.practicum.client.StatsClientImpl;
 import ru.yandex.practicum.dto.StatsRequestParamsDto;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
-import ru.yandex.practicum.dto.event.UpdateEventAdminRequest;
+import ru.yandex.practicum.dto.event.UpdateEventAdminRequestDto;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.model.StateAction;
@@ -21,8 +21,6 @@ import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.exception.WrongDataException;
-import ru.yandex.practicum.request.model.EventRequest;
-import ru.yandex.practicum.request.repository.RequestRepository;
 import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
@@ -75,7 +73,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             List<EventRequest> requestsByEventIds = requestRepository.findByEventIds(allEventsWithDates.stream()
                     .mapToLong(Event::getId).boxed().collect(Collectors.toList()));
             eventDtos = allEventsWithDates.stream()
-                    .map(eventMapper::mapEventToFullDto)
+                    .map(eventMapper::toFullDto)
                     .toList();
         } else {
             List<Event> allEventsWithDates = eventRepository.findAllEventsWithDates(users,
@@ -85,7 +83,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             List<EventRequest> requestsByEventIds = requestRepository.findByEventIds(allEventsWithDates.stream()
                     .mapToLong(Event::getId).boxed().collect(Collectors.toList()));
             eventDtos = allEventsWithDates.stream()
-                    .map(eventMapper::mapEventToFullDto)
+                    .map(eventMapper::toFullDto)
                     .toList();
         }
 
@@ -125,7 +123,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
-    public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateRequest) throws ConflictException, ValidationException, NotFoundException, WrongDataException {
+    public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequestDto updateRequest) throws ConflictException, ValidationException, NotFoundException, WrongDataException {
         log.info("Редактирование данных события и его статуса");
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Событие не существует " + eventId));
@@ -152,7 +150,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     EventFullDto getEventFullDto(Event event) {
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return eventMapper.mapEventToFullDto(event);
+        return eventMapper.toFullDto(event);
     }
 
     Event getEventById(Long eventId) throws NotFoundException {
@@ -160,7 +158,7 @@ public class AdminEventServiceImpl implements AdminEventService {
                 () -> new NotFoundException("Событие " + eventId + " не найдено"));
     }
 
-    void updateEventWithAdminRequest(Event event, UpdateEventAdminRequest updateRequest) throws NotFoundException, WrongDataException {
+    void updateEventWithAdminRequest(Event event, UpdateEventAdminRequestDto updateRequest) throws NotFoundException, WrongDataException {
         if (updateRequest.getAnnotation() != null) {
             event.setAnnotation(updateRequest.getAnnotation());
         }

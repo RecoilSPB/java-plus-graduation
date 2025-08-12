@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
-import ru.yandex.practicum.dto.event.UpdateEventAdminRequest;
+import ru.yandex.practicum.dto.event.UpdateEventAdminRequestDto;
 import ru.yandex.practicum.event.service.AdminEventService;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
@@ -40,7 +40,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable Long eventId,
-                                    @Valid @RequestBody UpdateEventAdminRequest event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
+                                    @Valid @RequestBody UpdateEventAdminRequestDto event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
         return eventService.updateEvent(eventId, event);
     }
 }

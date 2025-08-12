@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.dto.event.NewEventDto;
-import ru.yandex.practicum.dto.event.UpdateEventUserRequest;
+import ru.yandex.practicum.dto.event.UpdateEventUserRequestDto;
 import ru.yandex.practicum.event.service.UserEventService;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
@@ -49,7 +49,7 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable Long userId,
                                     @PathVariable Long eventId,
-                                    @Valid @RequestBody UpdateEventUserRequest event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
+                                    @Valid @RequestBody UpdateEventUserRequestDto event) throws ValidationException, ConflictException, WrongDataException, NotFoundException {
         return eventService.updateEvent(userId, eventId, event);
     }
 }

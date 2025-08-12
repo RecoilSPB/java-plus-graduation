@@ -14,7 +14,7 @@ import ru.yandex.practicum.dto.location.LocationDto;
 @Setter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateEventUserRequest {
+public class UpdateEventUserRequestDto {
 
     Long category;
 

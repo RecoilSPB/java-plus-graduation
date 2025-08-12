@@ -11,14 +11,13 @@ import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.dto.StatsRequestDto;
 import ru.yandex.practicum.dto.StatsRequestParamsDto;
 import ru.yandex.practicum.dto.event.EventFullDto;
-import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.dto.event.EventShortDto;
-import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.dto.event.EventState;
+import ru.yandex.practicum.event.mapper.EventMapper;
+import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.request.repository.RequestRepository;
 import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
@@ -59,7 +58,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Такого события не существует");
         }
         var confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        EventFullDto eventFullDto = eventMapper.mapEventToFullDto(event);
+        EventFullDto eventFullDto = eventMapper.toFullDto(event);
 
         List<String> urls = Collections.singletonList(uri);
         LocalDateTime start = LocalDateTime.parse(eventFullDto.getCreatedOn(), JsonFormatPattern.DATE_TIME_FORMATTER);

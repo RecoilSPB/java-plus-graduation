@@ -13,7 +13,6 @@ import ru.yandex.practicum.dto.StatsRequestParamsDto;
 import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.model.StateAction;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.event.repository.LocationRepository;
@@ -21,9 +20,6 @@ import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.exception.WrongDataException;
-import ru.yandex.practicum.request.repository.RequestRepository;
-import ru.yandex.practicum.user.model.User;
-import ru.yandex.practicum.user.repository.UserRepository;
 import ru.yandex.practicum.utils.JsonFormatPattern;
 
 import java.time.LocalDateTime;
@@ -103,11 +99,11 @@ public class UserEventServiceImpl implements UserEventService {
         event = eventRepository.save(event);
         log.info("Событие сохранено {}", event.getId());
 
-        return eventMapper.mapEventToFullDto(event, confirmedRequests);
+        return eventMapper.toFullDto(event, confirmedRequests);
     }
 
     @Override
-    public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest eventDto) throws ConflictException, NotFoundException, ValidationException, WrongDataException {
+    public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequestDto eventDto) throws ConflictException, NotFoundException, ValidationException, WrongDataException {
         log.info("Users...");
         log.info("Редактирование данных события и его статуса");
         Event event = getEventById(eventId);
@@ -124,7 +120,7 @@ public class UserEventServiceImpl implements UserEventService {
         locationRepository.save(event.getLocation());
         eventRepository.save(event);
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return getViewsCounter(eventMapper.mapEventToFullDto(event, confirmed));
+        return getViewsCounter(eventMapper.toFullDto(event, confirmed));
     }
 
     private User getUserById(Long userId) throws NotFoundException {
@@ -150,7 +146,7 @@ public class UserEventServiceImpl implements UserEventService {
             throw new ValidationException("Пользователь " + userId + " не является инициатором события " + eventId);
         }
         Long confirmed = requestRepository.countByEventAndStatuses(event.getId(), List.of("CONFIRMED"));
-        return getViewsCounter(eventMapper.mapEventToFullDto(event, confirmed));
+        return getViewsCounter(eventMapper.toFullDto(event, confirmed));
     }
 
     Event getEventById(Long eventId) throws NotFoundException {
@@ -158,7 +154,7 @@ public class UserEventServiceImpl implements UserEventService {
                 () -> new NotFoundException("Событие " + eventId + " не найдено"));
     }
 
-    void updateEventFromEventDto(Event event, UpdateEventUserRequest inpEventDto) throws NotFoundException, ValidationException {
+    void updateEventFromEventDto(Event event, UpdateEventUserRequestDto inpEventDto) throws NotFoundException, ValidationException {
         if (inpEventDto.getAnnotation() != null) {
             event.setAnnotation(inpEventDto.getAnnotation());
         }
