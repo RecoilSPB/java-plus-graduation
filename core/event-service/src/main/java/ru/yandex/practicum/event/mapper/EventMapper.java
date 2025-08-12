@@ -29,10 +29,6 @@ public interface EventMapper {
     @Mapping(target = "views", ignore = true)
     EventFullDto toFullDto(Event event);
 
-    List<EventFullDto> toFullDto(Iterable<Event> event);
-
-    Event mapNewEventDtoToEvent(NewEventDto newEvent, Category category);
-
     List<EventShortDto> toEventShortDtoList(Iterable<Event> events);
 
     @Mapping(target = "id", ignore = true)

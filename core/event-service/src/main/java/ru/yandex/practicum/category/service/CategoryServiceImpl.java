@@ -42,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryDto updateCategory(Long catId, CategoryDto categoryDto) {
         // Найти категорию по ID, либо выбросить исключение, если не найдена
+        log.info("start updateCategory");
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Категория с ID " + catId + " не найдена."));
 
@@ -56,11 +57,11 @@ public class CategoryServiceImpl implements CategoryService {
             ));
         }
 
-        // Обновить и сохранить изменения
-        category.setName(categoryDto.getName());
-        Category updatedCategory = categoryRepository.save(category);
+        Category update = categoryMapper.update(category, categoryDto);
+        category = categoryRepository.save(update);
+        log.info("Category is updated: {}", category);
 
-        return categoryMapper.mapCategory(updatedCategory);
+        return categoryMapper.mapCategory(category);
     }
 
 
