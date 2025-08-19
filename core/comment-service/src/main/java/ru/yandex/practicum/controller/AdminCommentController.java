@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.comment.CommentDto;
 import ru.yandex.practicum.dto.comment.GetCommentsAdminRequest;
-import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.facade.CommentFacade;
 
 import java.util.Collection;
 
@@ -20,21 +20,21 @@ import java.util.Collection;
 @Validated
 public class AdminCommentController {
 
-    private final CommentService service;
+    private final CommentFacade commentFacade;
 
     @GetMapping
     public Collection<CommentDto> getComments(
             @RequestParam("eventId") @Positive Long eventId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10") @Positive Integer size) {
-        return service.getAllEventComments(new GetCommentsAdminRequest(eventId, from, size));
+        return commentFacade.getAllEventComments(new GetCommentsAdminRequest(eventId, from, size));
     }
 
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeComment(@PathVariable("commentId") Long commentId) {
         log.info("удаление комментария с id {}", commentId);
-        service.delete(commentId);
+        commentFacade.delete(commentId);
     }
 
 }

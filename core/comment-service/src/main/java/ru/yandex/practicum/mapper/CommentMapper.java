@@ -13,5 +13,5 @@ public interface CommentMapper {
 
     List<CommentDto> mapToCommentDto(final List<Comment> comments);
 
-    Comment mapTo(final CommentDto comment, final Long userId, final Long eventId);
+    Comment mapTo(final CommentDto comment);
 }

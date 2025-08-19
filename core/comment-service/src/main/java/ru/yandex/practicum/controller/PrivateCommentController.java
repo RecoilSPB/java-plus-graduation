@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.comment.CommentDto;
-import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.facade.CommentFacade;
 
 import java.util.Collection;
 
@@ -18,9 +18,9 @@ import java.util.Collection;
 @RequestMapping("/users/{userId}/comments")
 @Slf4j
 @Validated
-public class UserCommentController {
+public class PrivateCommentController {
 
-    private final CommentService service;
+    private final CommentFacade commentFacade;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -28,7 +28,7 @@ public class UserCommentController {
             @PathVariable Long userId,
             @RequestParam @Positive Long eventId,
             @RequestBody @Validated CommentDto commentDto) {
-        return service.addComment(commentDto, userId, eventId);
+        return commentFacade.addComment(commentDto, userId, eventId);
     }
 
     @DeleteMapping("/{commentId}")
@@ -36,7 +36,7 @@ public class UserCommentController {
     public void deleteComment(
             @PathVariable @NonNull Long commentId,
             @PathVariable @NonNull Long userId) {
-        service.delete(userId, commentId);
+        commentFacade.delete(userId, commentId);
     }
 
     @PatchMapping("/{commentId}")
@@ -44,11 +44,11 @@ public class UserCommentController {
             @PathVariable Long userId,
             @PathVariable Long commentId,
             @RequestBody @Valid CommentDto commentDto) {
-        return service.updateUserComment(userId, commentId, commentDto);
+        return commentFacade.updateUserComment(userId, commentId, commentDto);
     }
 
     @GetMapping
     public Collection<CommentDto> getByUserComment(@PathVariable Long userId) {
-        return service.getAllUserComments(userId);
+        return commentFacade.getAllUserComments(userId);
     }
 }

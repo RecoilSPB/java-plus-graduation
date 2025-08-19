@@ -5,23 +5,23 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.comment.CommentDto;
-import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.facade.CommentFacade;
 
 import java.util.Collection;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/events/{eventId}/comments")
-public class CommentController {
+public class PublicCommentController {
 
-    private final CommentService service;
+    private final CommentFacade commentFacade;
 
     @GetMapping
     public Collection<CommentDto> getByEvent(
             @PathVariable Long eventId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10") @Positive Integer size) {
-        return service.getAllEventComments(eventId, from, size);
+        return commentFacade.getAllEventComments(eventId, from, size);
     }
 }
 
