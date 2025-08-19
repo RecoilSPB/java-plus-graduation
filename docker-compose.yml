@@ -19,6 +19,8 @@ services:
   main-db:
     image: postgres:16.1
     container_name: explore-postgres-main
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "6433:5432"
     networks:
@@ -56,6 +58,8 @@ services:
     depends_on:
       discovery-server:
         condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
     healthcheck:
       test: >
         sh -c '
@@ -78,9 +82,15 @@ services:
     container_name: gateway-server
     networks:
       - ewm-net
+    ports:
+      - "8080:8080"
     depends_on:
       config-server:
         condition: service_healthy
+      ewm-user:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
     healthcheck:
       test: >
         sh -c '
@@ -110,11 +120,26 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/stats-server |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://stats-server:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
 
-  ewm-service:
-    build: core/main-server
-    image: main-server
-    container_name: ewm-service
+  ewm-event:
+    build: core/event-service
+    image: event-service
+    container_name: ewm-event
     networks:
       - ewm-net
     depends_on:
@@ -124,6 +149,129 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/event-service |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://event-service:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
+
+  ewm-user:
+    build: core/user-service
+    image: user-service
+    container_name: ewm-user
+    networks:
+      - ewm-net
+    depends_on:
+      ewm-request:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/user-service |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://user-service:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
+
+  ewm-comment:
+    build: core/comment-service
+    image: comment-service
+    container_name: ewm-comment
+    networks:
+      - ewm-net
+    depends_on:
+      ewm-event:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/comment-service |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://comment-service:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
+
+  ewm-location:
+    build: core/location-service
+    image: location-service
+    container_name: ewm-location
+    networks:
+      - ewm-net
+    depends_on:
+      ewm-comment:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/location-service |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://location-service:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
+
+  ewm-request:
+    build: core/request-service
+    image: request-service
+    container_name: ewm-request
+    networks:
+      - ewm-net
+    depends_on:
+      ewm-location:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+    healthcheck:
+      test: >
+        sh -c '
+          PORT_APP=$$(curl -s -H "Accept: application/json" --fail http://discovery-server:8761/eureka/apps/request-service |
+            jq -r ".application.instance[0].port[\"$$\"]");
+          echo "Discovered PORT_APP=$$PORT_APP";
+          if [ -n "$$PORT_APP" ]; then
+            curl -sf http://request-service:$$PORT_APP/actuator/health || exit 1
+          else
+            exit 1
+          fi
+        '
+      timeout: 5s
+      interval: 25s
+      retries: 10
 
 networks:
   ewm-net:

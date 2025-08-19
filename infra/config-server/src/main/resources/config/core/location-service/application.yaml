@@ -20,7 +20,7 @@ spring:
       enabled: ALWAYS
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://main-db:5432/ewm_user
+    url: jdbc:postgresql://main-db:5432/ewm_location
     username: explore-main
     password: explore-main
 
