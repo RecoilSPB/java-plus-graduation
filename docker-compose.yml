@@ -87,8 +87,6 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
-      ewm-user:
-        condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
     healthcheck:
@@ -120,6 +118,7 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://stats-db:5432/explore-stats
     healthcheck:
       test: >
         sh -c '
@@ -149,6 +148,7 @@ services:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://main-db:5432/ewm_event
     healthcheck:
       test: >
         sh -c '
@@ -172,10 +172,13 @@ services:
     networks:
       - ewm-net
     depends_on:
-      ewm-request:
+      main-db:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://main-db:5432/ewm_user
     healthcheck:
       test: >
         sh -c '
@@ -199,10 +202,13 @@ services:
     networks:
       - ewm-net
     depends_on:
-      ewm-event:
+      main-db:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://main-db:5432/ewm_comment
     healthcheck:
       test: >
         sh -c '
@@ -226,10 +232,13 @@ services:
     networks:
       - ewm-net
     depends_on:
-      ewm-comment:
+      main-db:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://main-db:5432/ewm_location
     healthcheck:
       test: >
         sh -c '
@@ -253,10 +262,13 @@ services:
     networks:
       - ewm-net
     depends_on:
-      ewm-location:
+      main-db:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - DB_URL=jdbc:postgresql://main-db:5432/ewm_request
     healthcheck:
       test: >
         sh -c '
