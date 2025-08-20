@@ -16,4 +16,6 @@ public interface PrivateEventService {
     List<Event> getUserEvents(Long userId, Integer from, Integer count);
 
     Event getEventById(Long userId, Long eventId);
+
+    Event checkAndGetEventByIdAndInitiatorId(Long eventId, Long initiatorId);
 }

@@ -1,42 +1,81 @@
 package ru.yandex.practicum.event.service;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import com.querydsl.core.BooleanBuilder;
+import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.dto.event.EventPublicFilterParamsDto;
+import ru.yandex.practicum.dto.event.EventState;
+import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.QEvent;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.util.DateTimeUtil;
+import ru.yandex.practicum.util.PagingUtil;
 
 import java.util.List;
 
-@Service
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Service
+@AllArgsConstructor
 public class PublicEventServiceImpl implements PublicEventService {
 
-    final EventRepository eventRepository;
+    private final EventRepository eventRepository;
+    private final EntityManager entityManager;
 
     @Override
     public Event getEventById(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() ->
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Такого события не существует: " + eventId));
+        if (!EventState.PUBLISHED.equals(event.getState()))
+            throw new NotFoundException("On Event public get - Event isn't published with id: " + eventId);
+        return event;
     }
 
     @Override
-    public List<Event> getFilteredEvents(String text,
-                                         List<Long> categories,
-                                         Boolean paid,
-                                         String rangeStart,
-                                         String rangeEnd,
-                                         Boolean onlyAvailable,
-                                         String sort,
-                                         Integer from,
-                                         Integer size,
-                                         String uri,
-                                         String ip) {
-        return null;
+    public List<Event> getFilteredEvents(EventPublicFilterParamsDto filters,
+                                         int from,
+                                         int size,
+                                         List<LocationDto> locations,
+                                         HttpServletRequest request) {
+        QEvent qEvent = QEvent.event;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(qEvent.state.eq(EventState.PUBLISHED));
+
+        if (filters.getText() != null)
+            builder.and(qEvent.annotation.containsIgnoreCase(filters.getText())
+                    .or(qEvent.description.containsIgnoreCase(filters.getText())));
+
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty())
+            builder.and(qEvent.category.id.in(filters.getCategories()));
+
+        if (filters.getPaid() != null)
+            builder.and(qEvent.paid.eq(filters.getPaid()));
+
+        if (filters.getRangeStart() == null && filters.getRangeEnd() == null)
+            builder.and(qEvent.eventDate.goe(DateTimeUtil.currentDateTime()));
+        else {
+            if (filters.getRangeStart() != null)
+                builder.and(qEvent.eventDate.goe(filters.getRangeStart()));
+
+            if (filters.getRangeEnd() != null)
+                builder.and(qEvent.eventDate.loe(filters.getRangeEnd()));
+        }
+
+        if (filters.getLon() != null && filters.getLat() != null)
+            builder.and(qEvent.locationId.in(locations.stream().map(LocationDto::getId).toList()));
+
+        PageRequest page = PagingUtil.pageOf(from, size);
+        if (filters.getSort() != null && filters.getSort() == EventPublicFilterParamsDto.EventSort.EVENT_DATE)
+            page.withSort(new QSort(qEvent.eventDate.desc()));
+
+        return eventRepository.findAll(builder, page).toList();
     }
 }

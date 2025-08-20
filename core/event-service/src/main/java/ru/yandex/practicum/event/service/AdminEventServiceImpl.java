@@ -1,21 +1,26 @@
 package ru.yandex.practicum.event.service;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
+import ru.yandex.practicum.dto.event.EventAdminFilterParamsDto;
 import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.dto.event.EventStateActionAdmin;
 import ru.yandex.practicum.dto.event.UpdateEventAdminDto;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.QEvent;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.util.DateTimeUtil;
+import ru.yandex.practicum.util.PagingUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +36,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private static void calculateNewEventState(Event event, EventStateActionAdmin eventStateActionAdmin) {
         if (EventStateActionAdmin.REJECT_EVENT.equals(eventStateActionAdmin)) {
-            if (event.getState().equals(EventState.PUBLISHED)) {
+            if (EventState.PUBLISHED.equals(event.getState())) {
                 throw new ConflictException("Отклонить опубликованное событие невозможно");
             }
             event.setState(EventState.CANCELED);
@@ -39,7 +44,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             if (LocalDateTime.now().isAfter(event.getEventDate().minusHours(2))) {
                 throw new ConflictException("До начала события меньше часа, изменение события невозможно");
             }
-            if (event.getState().equals(EventState.PENDING)) {
+            if (EventState.PENDING.equals(event.getState())) {
                 throw new ConflictException("Событие не в состоянии \"Ожидание публикации\", изменение события невозможно");
             }
             LocalDateTime currentDateTime = DateTimeUtil.currentDateTime();
@@ -49,15 +54,29 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
-    public List<Event> getEvents(List<Long> users,
-                                 List<String> states,
-                                 List<Long> categories,
-                                 LocalDateTime rangeStart,
-                                 LocalDateTime rangeEnd,
-                                 Integer from,
-                                 Integer size) {
+    public List<Event> getEvents(EventAdminFilterParamsDto filters, int from, int size) {
 
-        return null;
+        QEvent event = QEvent.event;
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (filters.getUsers() != null && !filters.getUsers().isEmpty())
+            builder.and(event.initiatorId.in(filters.getUsers()));
+
+        if (filters.getStates() != null && !filters.getStates().isEmpty())
+            builder.and(event.state.in(filters.getStates()));
+
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty())
+            builder.and(event.category.id.in(filters.getCategories()));
+
+        if (filters.getRangeStart() != null)
+            builder.and(event.eventDate.goe(filters.getRangeStart()));
+
+        if (filters.getRangeEnd() != null)
+            builder.and(event.eventDate.loe(filters.getRangeEnd()));
+
+        return eventRepository.findAll(builder,
+                PagingUtil.pageOf(from, size).withSort(new QSort(event.createdOn.desc()))).toList();
     }
 
     @Override

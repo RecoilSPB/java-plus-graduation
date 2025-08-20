@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.request.EventRequestDto;
+import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.facade.EventRequestFacade;
 
 import java.util.List;
@@ -18,7 +19,10 @@ public class RequestController {
     @PostMapping("/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public EventRequestDto addEventRequest(@PathVariable Long userId,
-                                           @RequestParam Long eventId) {
+                                           @RequestParam(required = false) Long eventId) {
+        if (eventId == null) {
+            throw new ValidationException("Parameter 'eventId' is required");
+        }
         return requestFacade.addRequest(userId, eventId);
     }
 

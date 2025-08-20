@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.event.EventFullDto;
-import ru.yandex.practicum.dto.event.EventShortDto;
-import ru.yandex.practicum.dto.event.NewEventDto;
-import ru.yandex.practicum.dto.event.UpdateEventUserDto;
+import ru.yandex.practicum.dto.event.*;
+import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
@@ -48,5 +46,19 @@ public class PrivateEventController {
                                     @PathVariable Long eventId,
                                     @Valid @RequestBody UpdateEventUserDto event) {
         return eventFacade.updateEvent(userId, eventId, event);
+    }
+
+    @GetMapping(path = "/{eventId}/requests")
+    public List<EventRequestDto> getParticipationRequests(@PathVariable("userId") Long userId,
+                                                          @PathVariable("eventId") Long eventId) {
+        return eventFacade.getEventAllParticipationRequests(eventId, userId);
+    }
+
+    //Изменение статуса (подтверждена, отменена) заявок на участие в событии текущего пользователя
+    @PatchMapping(path = "/{eventId}/requests")
+    public EventRequestStatusUpdateResultDto updatedEventRequestStatus(@PathVariable("userId") Long userId,
+                                                                       @PathVariable("eventId") Long eventId,
+                                                                       @RequestBody EventRequestStatusUpdateRequestDto request) {
+        return eventFacade.changeEventState(userId, eventId, request);
     }
 }

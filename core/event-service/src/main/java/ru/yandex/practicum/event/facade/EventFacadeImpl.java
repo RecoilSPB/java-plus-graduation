@@ -8,6 +8,7 @@ import ru.yandex.practicum.client.LocationClient;
 import ru.yandex.practicum.client.RequestClient;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.client.UserClient;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsParamsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.dto.event.*;
@@ -15,20 +16,20 @@ import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
 import ru.yandex.practicum.dto.request.EventRequestCountDto;
 import ru.yandex.practicum.dto.request.EventRequestDto;
+import ru.yandex.practicum.dto.request.EventRequestStatus;
 import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.service.AdminEventService;
 import ru.yandex.practicum.event.service.PrivateEventService;
 import ru.yandex.practicum.event.service.PublicEventService;
+import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.LocationProcessingException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,16 +37,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EventFacadeImpl implements EventFacade {
+    private static final String appNameForStat = "event-service";
     private final UserClient userClient;
     private final StatsClient statClient;
     private final LocationClient locationClient;
     private final RequestClient requestClient;
-
     private final AdminEventService adminEventService;
     private final PublicEventService publicEventService;
     private final PrivateEventService privateEventService;
     private final EventMapper eventMapper;
-
 
     @Override
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
@@ -144,12 +144,28 @@ public class EventFacadeImpl implements EventFacade {
 
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
-        return null;
+        Event event = publicEventService.getEventById(eventId);
+        UserShortDto user = getUserById(event.getInitiatorId());
+        LocationDto location = locationClient.getById(event.getLocationId());
+
+        EventFullDto eventDto = eventMapper.toFullDto(event, location, user);
+        populateWithConfirmedRequests(List.of(event), List.of(eventDto));
+        populateWithStats(List.of(eventDto));
+
+        hitStat(request);
+        return eventDto;
     }
 
     @Override
     public List<EventFullDto> getEvents(EventAdminFilterParamsDto filters, int from, int size) {
-        return List.of();
+        List<Event> events = adminEventService.getEvents(filters, from, size);
+
+        List<EventFullDto> eventsDto = new ArrayList<>(eventMapper.toFullDto(events));
+
+        populateWithConfirmedRequests(events, eventsDto);
+        populateWithStats(eventsDto);
+
+        return eventsDto;
     }
 
     @Override
@@ -157,18 +173,82 @@ public class EventFacadeImpl implements EventFacade {
                                                  int from,
                                                  int size,
                                                  HttpServletRequest request) {
+        List<LocationDto> locations = getLocationsByRadius(filters.getLat(), filters.getLon(), filters.getRadius());
+        List<Event> events = publicEventService.getFilteredEvents(filters, from, size, locations, request);
+
+        List<EventShortDto> eventsDto = events.stream()
+                .map(event -> eventMapper.toShortDto(event, null))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        populateWithConfirmedRequests(events, eventsDto, true);
+        populateWithStats(eventsDto);
+
+        if (filters.getSort() != null && filters.getSort() == EventPublicFilterParamsDto.EventSort.VIEWS) {
+            eventsDto.sort(Comparator.comparing(EventShortDto::getViews,
+                    Comparator.nullsLast(Comparator.reverseOrder())));
+        }
+
+        hitStat(request);
         return List.of();
     }
 
     @Override
     public List<EventRequestDto> getEventAllParticipationRequests(Long eventId, Long userId) {
-        return List.of();
+        Event event = privateEventService.checkAndGetEventByIdAndInitiatorId(eventId, userId);
+        return requestClient.getByStatus(event.getId(), EventRequestStatus.PENDING);
     }
 
     @Override
     public EventRequestStatusUpdateResultDto changeEventState(Long userId,
                                                               Long eventId,
                                                               EventRequestStatusUpdateRequestDto requestStatusUpdateRequest) {
+        Event event = privateEventService.checkAndGetEventByIdAndInitiatorId(eventId, userId);
+        int participantsLimit = event.getParticipantLimit();
+
+        List<EventRequestDto> confirmedRequests = requestClient.getByStatus(eventId,
+                EventRequestStatus.CONFIRMED);
+        log.info("confirmedRequests: {}", confirmedRequests);
+
+        List<EventRequestDto> requestToChangeStatus = requestClient.getByIds(requestStatusUpdateRequest.getRequestIds());
+        List<Long> idsToChangeStatus = requestToChangeStatus.stream()
+                .map(EventRequestDto::getId)
+                .toList();
+        log.info("idsToChangeStatus: {}", idsToChangeStatus);
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+            log.info("Заявки подтверждать не требуется");
+            return null;
+        }
+
+        log.info("Заявки:  Лимит: {}, подтвержденных заявок {}, запрошенных заявок {}, разница между ними: {}", participantsLimit,
+                confirmedRequests.size(), requestStatusUpdateRequest.getRequestIds().size(), (participantsLimit
+                        - confirmedRequests.size() - requestStatusUpdateRequest.getRequestIds().size()));
+
+        if (requestStatusUpdateRequest.getStatus().equals(EventRequestStatus.CONFIRMED)) {
+            log.info("меняем статус заявок для статуса: {}", EventRequestStatus.CONFIRMED);
+            if ((participantsLimit - (confirmedRequests.size()) - requestStatusUpdateRequest.getRequestIds().size()) >= 0) {
+                List<EventRequestDto> requestUpdated = requestClient.updateStatus(
+                        EventRequestStatus.CONFIRMED, idsToChangeStatus);
+                return new EventRequestStatusUpdateResultDto(requestUpdated, null);
+            } else {
+                throw new ConflictException("слишком много участников. Лимит: " + participantsLimit +
+                        ", уже подтвержденных заявок: " + confirmedRequests.size() + ", а заявок на одобрение: " +
+                        idsToChangeStatus.size() +
+                        ". Разница между ними: " + (participantsLimit - confirmedRequests.size() -
+                        idsToChangeStatus.size()));
+            }
+        } else if (requestStatusUpdateRequest.getStatus().equals(EventRequestStatus.REJECTED)) {
+            log.info("меняем статус заявок для статуса: {}", EventRequestStatus.REJECTED);
+
+            for (EventRequestDto request : requestToChangeStatus) {
+                if (request.getStatus() == EventRequestStatus.CONFIRMED) {
+                    throw new ConflictException("Заявка" + request.getStatus() + "уже подтверждена.");
+                }
+            }
+
+            List<EventRequestDto> requestUpdated = requestClient.updateStatus(
+                    EventRequestStatus.REJECTED, idsToChangeStatus);
+            return new EventRequestStatusUpdateResultDto(null, requestUpdated);
+        }
         return null;
     }
 
@@ -197,7 +277,9 @@ public class EventFacadeImpl implements EventFacade {
     }
 
     private void populateWithStats(List<? extends EventShortDto> eventsDto) {
-        if (eventsDto.isEmpty()) return;
+        if (eventsDto.isEmpty()) {
+            return;
+        }
 
         Map<String, EventShortDto> uris = eventsDto.stream()
                 .collect(Collectors.toMap(e -> String.format("/events/%s", e.getId()), e -> e));
@@ -235,5 +317,22 @@ public class EventFacadeImpl implements EventFacade {
             eventsDto.removeIf(event -> publicEventService.getEventById(event.getId()).getParticipantLimit() -
                     event.getConfirmedRequests() <= 0);
         }
+    }
+
+    private void hitStat(HttpServletRequest request) {
+        statClient.postStats(StatsDto.builder()
+                .app(appNameForStat)
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(DateTimeUtil.currentDateTime())
+                .build());
+    }
+
+    private List<LocationDto> getLocationsByRadius(Double lat, Double lon, Double radius) {
+        if (lat == null || lon == null) {
+            return Collections.emptyList();
+        }
+
+        return locationClient.getByRadius(lat, lon, radius);
     }
 }

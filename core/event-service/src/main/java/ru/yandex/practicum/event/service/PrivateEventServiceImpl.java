@@ -77,7 +77,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 && event.getState().equals(EventState.PUBLISHED))) {
             throw new ConflictException("Отклонить опубликованное событие невозможно");
         }
-        validationEventDate(eventUpdateDto.getEventDate());
+        LocalDateTime eventDate = eventUpdateDto.getEventDate()== null ?
+                event.getEventDate(): eventUpdateDto.getEventDate();
+        validationEventDate(eventDate);
 
         eventMapper.update(event, eventUpdateDto, locationId);
         if (eventUpdateDto.getStateAction() != null) {
@@ -99,6 +101,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     public Event getEventById(Long userId, Long eventId) {
+        return checkAndGetEventByIdAndInitiatorId(eventId, userId);
+    }
+
+    @Override
+    public Event checkAndGetEventByIdAndInitiatorId(Long eventId, Long userId) {
         return eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException(String.format("On event operations - " +
                         "Event doesn't exist with id %s or not available for User with id %s: ", eventId, userId)));

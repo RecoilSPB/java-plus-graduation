@@ -3,67 +3,75 @@ package ru.yandex.practicum.event.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.proxy.HibernateProxy;
 import ru.yandex.practicum.category.model.Category;
-import ru.yandex.practicum.compilation.model.Compilation;
 import ru.yandex.practicum.dto.event.EventState;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "events")
 @Getter
 @Setter
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
 public class Event {
+
+    private final LocalDateTime createdOn = LocalDateTime.now();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false, length = 1024)
     String annotation;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     Category category;
 
-    @Column(name = "created_on")
-    LocalDateTime createdOn;
-
-    @Column(length = 1024)
     String description;
 
-    @Column(nullable = false, name = "event_date")
     LocalDateTime eventDate;
 
     Long initiatorId;
 
     Long locationId;
 
-    @Column
-    Boolean paid;
+    @Builder.Default
+    Boolean paid = false;
 
-    @Column(name = "participant_limit")
-    Integer participantLimit;
+    @Builder.Default
+    Integer participantLimit = 0;
 
-    @Column(name = "published_on")
     LocalDateTime publishedOn;
 
-    @Column(name = "request_moderation")
-    Boolean requestModeration;
+    @Builder.Default
+    Boolean requestModeration = true;
 
     @Enumerated(EnumType.STRING)
     EventState state;
 
-    @Column(nullable = false)
     String title;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "events_compilations",
-            joinColumns = @JoinColumn(name = "compilation"),
-            inverseJoinColumns = @JoinColumn(name = "event"))
-    List<Compilation> compilationList;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ?
+                ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+                ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Event event = (Event) o;
+        return getId() != null && Objects.equals(getId(), event.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy
+                ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+                : getClass().hashCode();
+    }
 }
