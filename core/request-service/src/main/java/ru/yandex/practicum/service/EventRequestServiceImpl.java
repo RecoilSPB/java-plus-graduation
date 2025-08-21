@@ -125,7 +125,7 @@ public class EventRequestServiceImpl implements EventRequestService {
             newRequest.setStatus(EventRequestStatus.PENDING);
         }
         newRequest.setEventId(event.getId());
-        if (event.getRequestModeration()) {
+        if (!event.getRequestModeration()) {
             newRequest.setStatus(EventRequestStatus.CONFIRMED);
         }
         return newRequest;

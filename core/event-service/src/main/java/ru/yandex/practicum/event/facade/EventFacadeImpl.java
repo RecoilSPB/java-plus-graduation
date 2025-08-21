@@ -241,7 +241,7 @@ public class EventFacadeImpl implements EventFacade {
 
             for (EventRequestDto request : requestToChangeStatus) {
                 if (request.getStatus() == EventRequestStatus.CONFIRMED) {
-                    throw new ConflictException("Заявка" + request.getStatus() + "уже подтверждена.");
+                    throw new ConflictException("Заявка " + request.getStatus() + " уже подтверждена.");
                 }
             }
 
