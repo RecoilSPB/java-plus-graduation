@@ -1,7 +1,6 @@
 package ru.yandex.practicum.event.service;
 
 import com.querydsl.core.BooleanBuilder;
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ import java.util.List;
 public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepository eventRepository;
-    private final EntityManager entityManager;
 
     @Override
     public Event getEventById(Long eventId) {
@@ -51,7 +49,8 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         if (filters.getText() != null)
             builder.and(qEvent.annotation.containsIgnoreCase(filters.getText())
-                    .or(qEvent.description.containsIgnoreCase(filters.getText())));
+                    .or(qEvent.description.containsIgnoreCase(filters.getText()))
+                    .or(qEvent.title.containsIgnoreCase(filters.getText())));
 
         if (filters.getCategories() != null && !filters.getCategories().isEmpty())
             builder.and(qEvent.category.id.in(filters.getCategories()));

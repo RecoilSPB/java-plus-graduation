@@ -6,19 +6,16 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.dto.location.NewLocationDto;
-import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventAdminDto {
 
@@ -34,7 +31,7 @@ public class UpdateEventAdminDto {
     String description;
 
     @Future
-    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_FORMAT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
 
     NewLocationDto location;

@@ -73,8 +73,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = getEventById(userId, eventId);
         Long locationId = location == null ? event.getLocationId() : location.getId();
 
-        if ((eventUpdateDto.getStateAction().equals(EventStateActionPrivate.CANCEL_REVIEW)
-                && event.getState().equals(EventState.PUBLISHED))) {
+        if ((EventStateActionPrivate.CANCEL_REVIEW.equals(eventUpdateDto.getStateAction())
+                && EventState.PUBLISHED.equals(event.getState()))) {
             throw new ConflictException("Отклонить опубликованное событие невозможно");
         }
         LocalDateTime eventDate = eventUpdateDto.getEventDate()== null ?
