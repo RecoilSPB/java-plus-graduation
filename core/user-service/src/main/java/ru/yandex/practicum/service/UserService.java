@@ -12,7 +12,7 @@ public interface UserService {
 
     UserShortDto getUserById(Long userId);
 
-    List<UserShortDto> getUsersByIdList(List<Long> ids, Pageable page);
+    List<UserDto> getUsersByIdList(List<Long> ids, Pageable page);
 
     void deleteUser(Long userId);
 }

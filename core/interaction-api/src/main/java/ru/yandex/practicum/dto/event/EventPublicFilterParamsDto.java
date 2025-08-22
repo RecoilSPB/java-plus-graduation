@@ -25,10 +25,10 @@ public class EventPublicFilterParamsDto {
     LocalDateTime rangeEnd;
     @Builder.Default
     Boolean onlyAvailable = false;
-    Double lat;
-    Double lon;
+    Float lat;
+    Float lon;
     @Builder.Default
-    Double radius = 0D;
+    Float radius = 0f;
     EventSort sort;
 
     public enum EventSort {

@@ -18,7 +18,7 @@ public interface LocationService {
 
     LocationDto addOrGetLocation(NewLocationDto newLocationDto);
 
-    List<LocationDto> getByRadius(Double lat, Double lon, Double radius);
+    List<LocationDto> getByRadius(Float lat, Float lon, Float radius);
 
     void delete(Long locationId);
 }

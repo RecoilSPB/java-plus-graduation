@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.dto.location.NewLocationDto;
+import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +32,7 @@ public class UpdateEventAdminDto {
     String description;
 
     @Future
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_FORMAT)
     LocalDateTime eventDate;
 
     NewLocationDto location;

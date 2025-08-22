@@ -145,6 +145,8 @@ public class EventFacadeImpl implements EventFacade {
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
         Event event = publicEventService.getEventById(eventId);
+        if (!EventState.PUBLISHED.equals(event.getState()))
+            throw new NotFoundException("On Event public get - Event isn't published with id: " + eventId);
         UserShortDto user = getUserById(event.getInitiatorId());
         LocationDto location = locationClient.getById(event.getLocationId());
 
@@ -183,13 +185,13 @@ public class EventFacadeImpl implements EventFacade {
         populateWithConfirmedRequests(events, eventsDto, true);
         populateWithStats(eventsDto);
 
-        if (filters.getSort() != null && filters.getSort() == EventPublicFilterParamsDto.EventSort.VIEWS) {
+        if (filters.getSort() != null && EventPublicFilterParamsDto.EventSort.VIEWS.equals(filters.getSort())) {
             eventsDto.sort(Comparator.comparing(EventShortDto::getViews,
                     Comparator.nullsLast(Comparator.reverseOrder())));
         }
 
         hitStat(request);
-        return List.of();
+        return eventsDto;
     }
 
     @Override
@@ -328,7 +330,7 @@ public class EventFacadeImpl implements EventFacade {
                 .build());
     }
 
-    private List<LocationDto> getLocationsByRadius(Double lat, Double lon, Double radius) {
+    private List<LocationDto> getLocationsByRadius(Float lat, Float lon, Float radius) {
         if (lat == null || lon == null) {
             return Collections.emptyList();
         }

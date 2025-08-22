@@ -30,8 +30,6 @@ public class PublicEventServiceImpl implements PublicEventService {
     public Event getEventById(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Такого события не существует: " + eventId));
-        if (!EventState.PUBLISHED.equals(event.getState()))
-            throw new NotFoundException("On Event public get - Event isn't published with id: " + eventId);
         return event;
     }
 
@@ -58,7 +56,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         if (filters.getPaid() != null)
             builder.and(qEvent.paid.eq(filters.getPaid()));
 
-        if (filters.getRangeStart() == null && filters.getRangeEnd() == null)
+        if (filters.getRangeStart() != null && filters.getRangeEnd() == null)
             builder.and(qEvent.eventDate.goe(DateTimeUtil.currentDateTime()));
         else {
             if (filters.getRangeStart() != null)

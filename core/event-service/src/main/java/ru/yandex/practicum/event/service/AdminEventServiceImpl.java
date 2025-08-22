@@ -44,7 +44,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             if (LocalDateTime.now().isAfter(event.getEventDate().minusHours(2))) {
                 throw new ConflictException("До начала события меньше часа, изменение события невозможно");
             }
-            if (EventState.PENDING.equals(event.getState())) {
+            if (!EventState.PENDING.equals(event.getState())) {
                 throw new ConflictException("Событие не в состоянии \"Ожидание публикации\", изменение события невозможно");
             }
             LocalDateTime currentDateTime = DateTimeUtil.currentDateTime();
@@ -60,14 +60,20 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (filters.getUsers() != null && !filters.getUsers().isEmpty())
-            builder.and(event.initiatorId.in(filters.getUsers()));
+        if (filters.getUsers() != null && filters.getUsers().isEmpty()) {
+            List<Long> users = filters.getUsers().stream().filter(userId -> userId > 0).toList();
+            if (!users.isEmpty())
+                builder.and(event.initiatorId.in(users));
+        }
 
         if (filters.getStates() != null && !filters.getStates().isEmpty())
             builder.and(event.state.in(filters.getStates()));
 
-        if (filters.getCategories() != null && !filters.getCategories().isEmpty())
-            builder.and(event.category.id.in(filters.getCategories()));
+        if (filters.getCategories() != null && !filters.getCategories().isEmpty()) {
+            List<Long> categories = filters.getCategories().stream().filter(categoryId -> categoryId > 0).toList();
+            if (!categories.isEmpty())
+                builder.and(event.category.id.in(categories));
+        }
 
         if (filters.getRangeStart() != null)
             builder.and(event.eventDate.goe(filters.getRangeStart()));
@@ -86,6 +92,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (event.getEventDate().isBefore(LocalDateTime.now())) {
             throw new ValidationException("Событие уже завершилось");
         }
+        calculateNewEventState(event, updateEventAdminDto.getStateAction());
 
         Long locationId = location == null ? event.getLocationId() : location.getId();
         Category category = null;
@@ -96,7 +103,6 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
 
         event = eventMapper.update(event, updateEventAdminDto, category, locationId);
-        calculateNewEventState(event, updateEventAdminDto.getStateAction());
 
         event = eventRepository.save(event);
         log.info("Event is updated by admin: {}", event);

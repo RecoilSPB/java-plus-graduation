@@ -22,7 +22,7 @@ public class ClientController implements LocationClient {
     }
 
     @Override
-    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) {
+    public List<LocationDto> getByRadius(Float lat, Float lon, Float radius) {
         return locationService.getByRadius(lat, lon, radius);
     }
 

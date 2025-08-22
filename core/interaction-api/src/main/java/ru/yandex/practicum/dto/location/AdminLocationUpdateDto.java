@@ -18,11 +18,11 @@ public class AdminLocationUpdateDto {
 
     @DecimalMin("-90.0")
     @DecimalMax("90.0")
-    private Double lat;
+    private Float lat;
 
     @DecimalMin("-180.0")
     @DecimalMax("180.0")
-    private Double lon;
+    private Float lon;
 
     @NullOrNotBlank
     @Size(min = 3, max = 255)

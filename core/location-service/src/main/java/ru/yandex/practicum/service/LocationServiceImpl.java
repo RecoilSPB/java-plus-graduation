@@ -105,7 +105,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationDto> getByRadius(Double lat, Double lon, Double radius) {
+    public List<LocationDto> getByRadius(Float lat, Float lon, Float radius) {
         log.debug("Fetching locations within radius - lat: {}, lon: {}, radius: {}", lat, lon, radius);
 
         try {

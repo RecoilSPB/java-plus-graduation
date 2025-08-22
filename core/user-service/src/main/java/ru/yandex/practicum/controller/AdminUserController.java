@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.user.UserDto;
-import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.service.UserService;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public class AdminUserController {
     final UserService userService;
 
     @GetMapping
-    public List<UserShortDto> getUsersList(@RequestParam(required = false) List<Long> ids,
-                                           @RequestParam(required = false, defaultValue = "0") Integer from,
-                                           @RequestParam(required = false, defaultValue = "10") Integer size) {
+    public List<UserDto> getUsersList(@RequestParam(required = false) List<Long> ids,
+                                      @RequestParam(required = false, defaultValue = "0") Integer from,
+                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
         return userService.getUsersByIdList(ids, PageRequest.of(from, size));
     }
 

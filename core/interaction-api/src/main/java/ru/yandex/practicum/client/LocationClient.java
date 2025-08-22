@@ -14,9 +14,9 @@ public interface LocationClient {
     LocationDto addOrGetLocation(@RequestBody NewLocationDto newLocationDto);
 
     @GetMapping
-    List<LocationDto> getByRadius(@RequestParam(name = "latitude") Double lat,
-                                  @RequestParam(name = "longitude") Double lon,
-                                  @RequestParam(name = "radius") Double radius);
+    List<LocationDto> getByRadius(@RequestParam(name = "latitude") Float lat,
+                                  @RequestParam(name = "longitude") Float lon,
+                                  @RequestParam(name = "radius") Float radius);
 
     @GetMapping("/{locationId}")
     LocationDto getById(@PathVariable Long locationId);

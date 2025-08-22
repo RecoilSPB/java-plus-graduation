@@ -2,17 +2,15 @@ package ru.yandex.practicum.dto.compilation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCompilationDto {
     @NotBlank
@@ -21,5 +19,6 @@ public class NewCompilationDto {
 
     List<Long> events;
 
-    Boolean pinned;
+    @Builder.Default
+    Boolean pinned = false;
 }

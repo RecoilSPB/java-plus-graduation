@@ -71,12 +71,12 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public Event updateEvent(Long userId, Long eventId, UpdateEventUserDto eventUpdateDto, LocationDto location) {
         log.info("Редактирование данных события и его статуса");
         Event event = getEventById(userId, eventId);
+        if (EventState.PUBLISHED.equals(event.getState()))
+            throw new ConflictException("Редактирование опубликованного события невозможно.");
+
         Long locationId = location == null ? event.getLocationId() : location.getId();
 
-        if ((EventStateActionPrivate.CANCEL_REVIEW.equals(eventUpdateDto.getStateAction())
-                && EventState.PUBLISHED.equals(event.getState()))) {
-            throw new ConflictException("Отклонить опубликованное событие невозможно");
-        }
+
         LocalDateTime eventDate = eventUpdateDto.getEventDate()== null ?
                 event.getEventDate(): eventUpdateDto.getEventDate();
         validationEventDate(eventDate);

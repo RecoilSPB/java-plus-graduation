@@ -11,12 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
-    Optional<Location> findByLatAndLon(Double lat, Double lon);
+    Optional<Location> findByLatAndLon(Float lat, Float lon);
 
     @Query("select l from Location l where distance(l.lat, l.lon, :latitude, :longitude) <= :radius")
     List<Location> findAllByRadius(
-            @Param("latitude") Double latitude,
-            @Param("longitude") Double longitude,
-            @Param("radius") Double radius
+            @Param("latitude") Float latitude,
+            @Param("longitude") Float longitude,
+            @Param("radius") Float radius
     );
 }

@@ -51,7 +51,8 @@ public class Event {
     Boolean requestModeration = true;
 
     @Enumerated(EnumType.STRING)
-    EventState state;
+    @Builder.Default
+    EventState state = EventState.PENDING;
 
     String title;
 

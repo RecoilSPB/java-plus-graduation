@@ -3,6 +3,7 @@ package ru.yandex.practicum.compilation.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.yandex.practicum.compilation.model.Compilation;
 import ru.yandex.practicum.dto.compilation.NewCompilationDto;
 import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
@@ -12,7 +13,8 @@ import ru.yandex.practicum.event.model.Event;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CompilationMapper {
 
     @Mapping(target = "events", source = "events")

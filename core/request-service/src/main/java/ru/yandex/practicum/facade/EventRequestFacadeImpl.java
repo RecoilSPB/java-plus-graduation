@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.EventClient;
 import ru.yandex.practicum.client.UserClient;
 import ru.yandex.practicum.dto.event.EventFullDto;
+import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.dto.request.EventRequestCountDto;
 import ru.yandex.practicum.dto.request.EventRequestDto;
 import ru.yandex.practicum.dto.request.EventRequestStatus;
 import ru.yandex.practicum.dto.user.UserShortDto;
+import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.service.EventRequestService;
 
@@ -75,6 +77,10 @@ public class EventRequestFacadeImpl implements EventRequestFacade {
         EventFullDto event = eventClient.getById(eventId);
         if (event == null) {
             throw new NotFoundException("Такого события не существует: " + eventId);
+        }
+
+        if (!EventState.PUBLISHED.equals(event.getState())) {
+            throw new ConflictException("On Event public get - Event isn't published with id: " + eventId);
         }
 
         return event;

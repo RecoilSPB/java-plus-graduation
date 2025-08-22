@@ -5,10 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.dto.location.NewLocationDto;
 import ru.yandex.practicum.util.DateTimeUtil;
@@ -16,9 +13,10 @@ import ru.yandex.practicum.util.DateTimeUtil;
 import java.time.LocalDateTime;
 
 
-@Getter
-@Setter
+@Data
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventUserDto {
 
