@@ -15,12 +15,10 @@
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>interaction-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>stats-client</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
