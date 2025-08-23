@@ -1,6 +1,5 @@
 package ru.yandex.practicum.event.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.dto.event.EventState;
@@ -30,6 +30,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PrivateEventServiceImpl implements PrivateEventService {
@@ -48,6 +49,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
+    @Transactional
     public Event addEvent(Long userId, NewEventDto eventDto, Long locationId) {
         log.info("Добавление нового события пользователем {}", userId);
         validationEventDate(eventDto.getEventDate());

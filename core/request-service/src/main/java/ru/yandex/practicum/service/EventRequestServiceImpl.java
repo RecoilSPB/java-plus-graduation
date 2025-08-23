@@ -24,8 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
+@Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class EventRequestServiceImpl implements EventRequestService {
 
     EventRequestMapper eventRequestMapper;
@@ -99,6 +100,7 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
+    @Transactional
     public List<EventRequestDto> updateStatus(EventRequestStatus status, List<Long> ids) {
         List<EventRequest> requests = requestRepository.findAllById(ids);
 

@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.dto.event.EventAdminFilterParamsDto;
@@ -30,9 +31,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class AdminEventServiceImpl implements AdminEventService {
+
     EventRepository eventRepository;
     CategoryRepository categoryRepository;
     EventMapper eventMapper;
@@ -89,6 +92,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public Event updateEvent(Long eventId, UpdateEventAdminDto updateEventAdminDto, LocationDto location) {
         log.info("Редактирование данных события и его статуса");
         Event event = getEventById(eventId);

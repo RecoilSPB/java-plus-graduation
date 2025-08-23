@@ -25,8 +25,8 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationServiceImpl implements CompilationService {
     CompilationRepository compilationRepository;
@@ -36,7 +36,6 @@ public class CompilationServiceImpl implements CompilationService {
     EventMapper eventMapper;
 
     @Override
-    @Transactional
     public List<ResponseCompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         log.info("getCompilations params: pinned = {}, from = {}, size = {}", pinned, from, size);
         PageRequest page = PagingUtil.pageOf(from, size);
