@@ -10,12 +10,12 @@ import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
 import java.util.List;
 
 @RestController
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PublicCompilationController {
 
-    final CompilationService compilationService;
+    CompilationService compilationService;
 
     @GetMapping
     public List<ResponseCompilationDto> getAll(@RequestParam(required = false) Boolean pinned,

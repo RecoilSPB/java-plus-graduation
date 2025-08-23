@@ -1,7 +1,9 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -11,13 +13,15 @@ import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
 import ru.yandex.practicum.service.LocationService;
 
+@Slf4j
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping(path = "/admin/locations")
 @RequiredArgsConstructor
-@Validated
-@Slf4j
 public class AdminLocationController {
-    private final LocationService locationService;
+
+    LocationService locationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventRequestServiceImpl implements EventRequestService {
 
-    final EventRequestMapper eventRequestMapper;
-    final RequestRepository requestRepository;
+    EventRequestMapper eventRequestMapper;
+    RequestRepository requestRepository;
 
     @Override
     @Transactional

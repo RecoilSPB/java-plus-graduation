@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventAdminFilterParamsDto;
 import ru.yandex.practicum.dto.event.EventFullDto;
@@ -12,13 +13,14 @@ import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
 
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminEventController {
 
-    final EventFacade eventFacade;
+    EventFacade eventFacade;
 
     @GetMapping
     public List<EventFullDto> getEvents(@Valid EventAdminFilterParamsDto filters,

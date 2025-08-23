@@ -2,7 +2,9 @@ package ru.yandex.practicum.event.service;
 
 import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.querydsl.QSort;
@@ -21,10 +23,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 public class PublicEventServiceImpl implements PublicEventService {
 
-    private final EventRepository eventRepository;
+    EventRepository eventRepository;
 
     @Override
     public Event getEventById(Long eventId) {

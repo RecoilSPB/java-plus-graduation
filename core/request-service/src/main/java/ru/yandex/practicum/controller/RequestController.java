@@ -1,6 +1,8 @@
 package ru.yandex.practicum.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.request.EventRequestDto;
@@ -9,12 +11,13 @@ import ru.yandex.practicum.facade.EventRequestFacade;
 
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}")
 public class RequestController {
 
-    final EventRequestFacade requestFacade;
+    EventRequestFacade requestFacade;
 
     @PostMapping("/requests")
     @ResponseStatus(HttpStatus.CREATED)

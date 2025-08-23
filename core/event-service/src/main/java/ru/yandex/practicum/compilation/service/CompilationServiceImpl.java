@@ -27,13 +27,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompilationServiceImpl implements CompilationService {
-    final CompilationRepository compilationRepository;
-    final EventRepository eventRepository;
+    CompilationRepository compilationRepository;
+    EventRepository eventRepository;
 
-    final CompilationMapper compilationMapper;
-    final EventMapper eventMapper;
+    CompilationMapper compilationMapper;
+    EventMapper eventMapper;
 
     @Override
     @Transactional

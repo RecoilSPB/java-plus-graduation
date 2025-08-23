@@ -20,7 +20,7 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
 
-    private final LocalDateTime createdOn = LocalDateTime.now();
+    final LocalDateTime createdOn = LocalDateTime.now();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

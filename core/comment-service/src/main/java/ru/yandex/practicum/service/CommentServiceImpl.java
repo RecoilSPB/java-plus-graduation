@@ -1,6 +1,8 @@
 package ru.yandex.practicum.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,12 @@ import java.util.List;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    final CommentRepository commentRepository;
-    final CommentMapper commentMapper;
+    CommentRepository commentRepository;
+    CommentMapper commentMapper;
 
     @Override
     @Transactional

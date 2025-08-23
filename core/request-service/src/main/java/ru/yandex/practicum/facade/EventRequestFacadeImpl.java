@@ -1,6 +1,8 @@
 package ru.yandex.practicum.facade;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.EventClient;
 import ru.yandex.practicum.client.UserClient;
@@ -17,13 +19,14 @@ import ru.yandex.practicum.service.EventRequestService;
 import java.util.List;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class EventRequestFacadeImpl implements EventRequestFacade {
 
-    private final UserClient userClient;
-    private final EventClient eventClient;
+    UserClient userClient;
+    EventClient eventClient;
 
-    private final EventRequestService eventRequestService;
+    EventRequestService eventRequestService;
 
     // RequestController
     @Override

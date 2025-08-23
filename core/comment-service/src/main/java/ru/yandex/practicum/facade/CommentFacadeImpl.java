@@ -1,6 +1,8 @@
 package ru.yandex.practicum.facade;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.EventClient;
@@ -19,13 +21,14 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CommentFacadeImpl implements CommentFacade {
 
-    private final UserClient userClient;
-    private final EventClient eventClient;
+    UserClient userClient;
+    EventClient eventClient;
 
-    private final CommentService commentService;
+    CommentService commentService;
 
     @Override
     public Collection<CommentDto> getAllEventComments(GetCommentsAdminRequest getCommentsAdminRequest) {

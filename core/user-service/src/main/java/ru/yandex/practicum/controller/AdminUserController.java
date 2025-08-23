@@ -6,19 +6,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.user.UserDto;
 import ru.yandex.practicum.service.UserService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
-    final UserService userService;
+    UserService userService;
 
     @GetMapping
     public List<UserDto> getUsersList(@RequestParam(required = false) List<Long> ids,

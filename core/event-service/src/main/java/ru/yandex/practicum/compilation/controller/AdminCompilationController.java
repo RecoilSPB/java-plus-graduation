@@ -5,19 +5,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.compilation.service.CompilationService;
 import ru.yandex.practicum.dto.compilation.NewCompilationDto;
 import ru.yandex.practicum.dto.compilation.ResponseCompilationDto;
 import ru.yandex.practicum.dto.compilation.UpdateCompilationRequestDto;
 
+@Validated
 @RestController
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminCompilationController {
 
-    final CompilationService compilationService;
+    CompilationService compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

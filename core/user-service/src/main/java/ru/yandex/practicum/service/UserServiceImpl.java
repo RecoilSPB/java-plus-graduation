@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    final UserRepository userRepository;
-    final UserMapper userMapper;
+    UserRepository userRepository;
+    UserMapper userMapper;
 
     @Override
     @Transactional

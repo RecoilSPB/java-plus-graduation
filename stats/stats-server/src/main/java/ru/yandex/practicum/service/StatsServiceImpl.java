@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 @Slf4j
 public class StatsServiceImpl implements StatsService {
 
-    final StatsRepository statsRepository;
+    StatsRepository statsRepository;
 
     @Transactional
     public StatsDto save(StatsDto requestDto) {

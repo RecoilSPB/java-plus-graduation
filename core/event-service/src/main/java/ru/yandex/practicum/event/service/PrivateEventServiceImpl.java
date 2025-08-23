@@ -31,12 +31,12 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PrivateEventServiceImpl implements PrivateEventService {
 
-    final EventRepository eventRepository;
-    final CategoryRepository categoryRepository;
-    final EventMapper eventMapper;
+    EventRepository eventRepository;
+    CategoryRepository categoryRepository;
+    EventMapper eventMapper;
 
     private static void validationEventDate(LocalDateTime eventDate) {
         if (LocalDateTime.now().isAfter(eventDate.minusHours(1))) {

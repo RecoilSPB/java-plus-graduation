@@ -1,6 +1,8 @@
 package ru.yandex.practicum.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +11,15 @@ import ru.yandex.practicum.service.LocationService;
 
 import java.util.List;
 
+@Slf4j
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping(path = "/locations")
 @RequiredArgsConstructor
-@Validated
-@Slf4j
 public class PublicLocationController {
-    private final LocationService locationService;
+
+    LocationService locationService;
 
     @GetMapping
     public List<LocationDto> getLocations(@RequestParam(defaultValue = "0") Integer from,

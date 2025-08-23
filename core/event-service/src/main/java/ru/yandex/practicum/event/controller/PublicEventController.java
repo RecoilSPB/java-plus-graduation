@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.dto.event.EventPublicFilterParamsDto;
@@ -15,13 +16,14 @@ import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
 
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PublicEventController {
 
-    final EventFacade eventFacade;
+    EventFacade eventFacade;
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Long id,

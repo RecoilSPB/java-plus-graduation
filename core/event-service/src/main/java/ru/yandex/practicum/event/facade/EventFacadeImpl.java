@@ -1,7 +1,9 @@
 package ru.yandex.practicum.event.facade;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.LocationClient;
@@ -35,17 +37,18 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class EventFacadeImpl implements EventFacade {
-    private static final String appNameForStat = "event-service";
-    private final UserClient userClient;
-    private final StatsClient statClient;
-    private final LocationClient locationClient;
-    private final RequestClient requestClient;
-    private final AdminEventService adminEventService;
-    private final PublicEventService publicEventService;
-    private final PrivateEventService privateEventService;
-    private final EventMapper eventMapper;
+    static String APP_NAME_FOR_STAT = "event-service";
+    UserClient userClient;
+    StatsClient statClient;
+    LocationClient locationClient;
+    RequestClient requestClient;
+    AdminEventService adminEventService;
+    PublicEventService publicEventService;
+    PrivateEventService privateEventService;
+    EventMapper eventMapper;
 
     @Override
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
@@ -323,7 +326,7 @@ public class EventFacadeImpl implements EventFacade {
 
     private void hitStat(HttpServletRequest request) {
         statClient.postStats(StatsDto.builder()
-                .app(appNameForStat)
+                .app(APP_NAME_FOR_STAT)
                 .uri(request.getRequestURI())
                 .ip(request.getRemoteAddr())
                 .timestamp(DateTimeUtil.currentDateTime())

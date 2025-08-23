@@ -1,7 +1,9 @@
 package ru.yandex.practicum.event.service;
 
 import com.querydsl.core.BooleanBuilder;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,12 @@ import java.util.List;
 
 @Slf4j
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class AdminEventServiceImpl implements AdminEventService {
-    final EventRepository eventRepository;
-    final CategoryRepository categoryRepository;
-    final EventMapper eventMapper;
+    EventRepository eventRepository;
+    CategoryRepository categoryRepository;
+    EventMapper eventMapper;
 
     private static void calculateNewEventState(Event event, EventStateActionAdmin eventStateActionAdmin) {
         if (EventStateActionAdmin.REJECT_EVENT.equals(eventStateActionAdmin)) {
@@ -60,7 +63,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (filters.getUsers() != null && filters.getUsers().isEmpty()) {
+        if (filters.getUsers() != null && !filters.getUsers().isEmpty()) {
             List<Long> users = filters.getUsers().stream().filter(userId -> userId > 0).toList();
             if (!users.isEmpty())
                 builder.and(event.initiatorId.in(users));

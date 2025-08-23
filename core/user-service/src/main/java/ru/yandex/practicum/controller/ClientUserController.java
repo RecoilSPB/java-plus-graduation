@@ -1,6 +1,8 @@
 package ru.yandex.practicum.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,12 +14,13 @@ import ru.yandex.practicum.service.UserService;
 
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping(path = "/internal/api/users")
 @RequiredArgsConstructor
 public class ClientUserController implements UserClient {
-    private final UserService userService;
 
+    UserService userService;
 
     @Override
     public UserShortDto getById(Long userId) {

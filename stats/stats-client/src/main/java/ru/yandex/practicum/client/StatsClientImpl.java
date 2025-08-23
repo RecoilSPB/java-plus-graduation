@@ -1,5 +1,7 @@
 package ru.yandex.practicum.client;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,11 +34,13 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StatsClientImpl implements StatsClient {
-    private final RestTemplate rest;
-    private final DiscoveryClient discoveryClient;
-    private final RetryTemplate retryTemplate;
-    private final String statsServiceId;
+
+    RestTemplate rest;
+    DiscoveryClient discoveryClient;
+    RetryTemplate retryTemplate;
+    String statsServiceId;
 
     @Autowired
     public StatsClientImpl(DiscoveryClient discoveryClient,

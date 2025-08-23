@@ -10,11 +10,11 @@ import ru.yandex.practicum.dto.category.CategoryDto;
 import java.util.List;
 
 @RestController
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 public class PublicCategoryController {
-    final CategoryService categoryService;
+    CategoryService categoryService;
 
     @GetMapping
     public List<CategoryDto> getAllCategorys(@RequestParam(required = false, defaultValue = "0") Integer from,

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.request.EventRequestDto;
@@ -12,13 +13,14 @@ import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
 
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PrivateEventController {
 
-    final EventFacade eventFacade;
+    EventFacade eventFacade;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

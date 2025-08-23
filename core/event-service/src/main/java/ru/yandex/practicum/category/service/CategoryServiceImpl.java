@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CategoryServiceImpl implements CategoryService {
 
-    final CategoryRepository categoryRepository;
-    final EventRepository eventRepository;
-    final CategoryMapper categoryMapper;
+    CategoryRepository categoryRepository;
+    EventRepository eventRepository;
+    CategoryMapper categoryMapper;
 
     @Override
     @Transactional
