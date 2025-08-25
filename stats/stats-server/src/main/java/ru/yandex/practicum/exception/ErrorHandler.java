@@ -20,7 +20,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleWrongData(final NotFoundException e) {
         log.error("Not found: " + e.getMessage());
         return Map.of("error", e.getMessage());

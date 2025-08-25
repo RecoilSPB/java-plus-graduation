@@ -1,13 +1,16 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.StatsRequestDto;
+import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.service.StatsService;
 
@@ -16,11 +19,13 @@ import java.util.List;
 
 import static ru.yandex.practicum.utils.JsonFormatPattern.JSON_FORMAT_PATTERN_FOR_TIME;
 
-@RestController
 @Slf4j
+@Validated
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RestController
 public class StatsController {
 
-    final StatsService statsService;
+    StatsService statsService;
 
     @Autowired
     public StatsController(@Qualifier("statsServiceImpl") StatsService statsService) {
@@ -40,8 +45,8 @@ public class StatsController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public StatsRequestDto save(@RequestBody @Valid StatsRequestDto statsRequestDto) {
-        log.info("Получен запрос на добавление статистики: StatsRequestDto: {}", statsRequestDto);
-        return statsService.save(statsRequestDto);
+    public StatsDto save(@RequestBody @Valid StatsDto statsDto) {
+        log.info("Получен запрос на добавление статистики: StatsRequestDto: {}", statsDto);
+        return statsService.save(statsDto);
     }
 }
