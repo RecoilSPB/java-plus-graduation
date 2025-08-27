@@ -24,8 +24,8 @@
 
         <!-- Until gRPC generator library moves to generated jakarta instead of javax -->
         <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>

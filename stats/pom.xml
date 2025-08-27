@@ -13,15 +13,15 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Explore With Me Stats</name>
+<!--    <name>Explore With Me Stats</name>-->
 
     <modules>
-        <module>stats-client</module>
+        <module>serialization</module>
         <module>stats-dto</module>
+        <module>stats-client</module>
         <module>stats-server</module>
         <module>aggregator</module>
         <module>collector</module>
-        <module>serialization</module>
         <module>analyzer</module>
     </modules>
 </project>

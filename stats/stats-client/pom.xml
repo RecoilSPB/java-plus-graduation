@@ -11,7 +11,7 @@
 
     <artifactId>stats-client</artifactId>
 
-    <name>Explore With Me Stats Client</name>
+<!--    <name>Explore With Me Stats Client</name>-->
 
     <dependencies>
         <dependency>
@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
-            <artifactId>stats-server</artifactId>
+            <artifactId>proto-schemas</artifactId>
         </dependency>
 
         <dependency>
@@ -52,6 +52,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-client-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>

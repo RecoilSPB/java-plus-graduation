@@ -12,7 +12,7 @@
     <artifactId>stats-dto</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Explore With Me Stats Dto</name>
+<!--    <name>Explore With Me Stats Dto</name>-->
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
