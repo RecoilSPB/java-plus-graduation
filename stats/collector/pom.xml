@@ -14,12 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
-            <artifactId>avro-schemas</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.yandex.practicum</groupId>
-            <artifactId>proto-schemas</artifactId>
+            <artifactId>stats-dto</artifactId>
             <version>${project.version}</version>
         </dependency>
 
