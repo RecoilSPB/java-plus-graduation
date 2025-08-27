@@ -10,9 +10,6 @@ import ru.yandex.practicum.client.LocationClient;
 import ru.yandex.practicum.client.RequestClient;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.client.UserClient;
-import ru.yandex.practicum.dto.StatsDto;
-import ru.yandex.practicum.dto.StatsParamsDto;
-import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
@@ -290,15 +287,16 @@ public class EventFacadeImpl implements EventFacade {
                 .collect(Collectors.toMap(e -> String.format("/events/%s", e.getId()), e -> e));
 
         LocalDateTime currentDateTime = DateTimeUtil.currentDateTime();
-        List<StatsResponseDto> stats = statClient.getAllStats(StatsParamsDto.builder()
-                .start(currentDateTime.minusDays(1))
-                .end(currentDateTime)
-                .uris(uris.keySet().stream().toList())
-                .unique(true)
-                .build()).stream().toList();
+//        TODO Исправить
+//        List<StatsResponseDto> stats = statClient.getAllStats(StatsParamsDto.builder()
+//                .start(currentDateTime.minusDays(1))
+//                .end(currentDateTime)
+//                .uris(uris.keySet().stream().toList())
+//                .unique(true)
+//                .build()).stream().toList();
 
-        stats.forEach(stat -> Optional.ofNullable(uris.get(stat.getUri()))
-                .ifPresent(e -> e.setViews(stat.getHits())));
+//        stats.forEach(stat -> Optional.ofNullable(uris.get(stat.getUri()))
+//                .ifPresent(e -> e.setViews(stat.getHits())));
     }
 
     private void populateWithConfirmedRequests(List<Event> events, List<? extends EventShortDto> eventsDto) {
@@ -325,12 +323,13 @@ public class EventFacadeImpl implements EventFacade {
     }
 
     private void hitStat(HttpServletRequest request) {
-        statClient.postStats(StatsDto.builder()
-                .app(APP_NAME_FOR_STAT)
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(DateTimeUtil.currentDateTime())
-                .build());
+//        TODO Исправить
+//        statClient.postStats(StatsDto.builder()
+//                .app(APP_NAME_FOR_STAT)
+//                .uri(request.getRequestURI())
+//                .ip(request.getRemoteAddr())
+//                .timestamp(DateTimeUtil.currentDateTime())
+//                .build());
     }
 
     private List<LocationDto> getLocationsByRadius(Float lat, Float lon, Float radius) {
