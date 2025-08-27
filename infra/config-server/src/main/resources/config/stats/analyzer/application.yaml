@@ -1,0 +1,52 @@
+grpc:
+  server:
+    port: 0
+  client:
+    analyzer:
+      address: 'discovery:///analyzer'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+analyzer:
+  kafka:
+    bootstrap-servers: ${KAFKA_URL:localhost:9092}
+
+    user-action-consumer:
+      group-id: "action-analyzer-group"
+      client-id: "action-consumer-1"
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "ru.yandex.practicum.avro.UserActionDeserializer"
+      attempt-timeout: 1000
+      enable-auto-commit: "false"
+
+    event-similarity-consumer:
+      group-id: "similarity-analyzer-group"
+      client-id: "similarity-consumer-1"
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "ru.yandex.practicum.avro.EventSimilarityDeserializer"
+      attempt-timeout: 1000
+      enable-auto-commit: "false"
+
+    user-action-topic: "stats.user-actions.v1"
+    events-similarity-topic: "stats.events-similarity.v1"
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+  output:
+    ansi:
+      enabled: ALWAYS
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:postgresql://localhost:6432/explore-stats}
+    username: explore-stats
+    password: explore-stats
