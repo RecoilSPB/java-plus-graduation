@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "ru.practicum.grpc.stats.collector";
+option java_package = "ru.yandex.practicum.grpc.stats.collector";
 
 import "google/protobuf/empty.proto";
 import "stats/massages/user_action.proto";
