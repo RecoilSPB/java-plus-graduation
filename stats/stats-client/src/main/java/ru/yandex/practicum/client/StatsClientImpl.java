@@ -1,16 +1,14 @@
 package ru.yandex.practicum.client;
 
 import com.google.protobuf.Timestamp;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.grpc.stats.collector.UserActionControllerGrpc;
 import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
 import ru.yandex.practicum.grpc.stats.action.UserActionProto;
 import ru.yandex.practicum.grpc.stats.analyzer.RecommendationsControllerGrpc;
+import ru.yandex.practicum.grpc.stats.collector.UserActionControllerGrpc;
 import ru.yandex.practicum.grpc.stats.request.InteractionsCountRequestProto;
 import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
 import ru.yandex.practicum.grpc.stats.request.SimilarEventsRequestProto;
@@ -26,20 +24,20 @@ import java.util.stream.StreamSupport;
 
 /**
  * Клиент для работы со статистикой и рекомендациями
+ *
  * @author PopovN
  * @created 09.06.2025 14:13
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StatsClientImpl implements StatsClient {
 
     @GrpcClient("collector")
-    UserActionControllerGrpc.UserActionControllerBlockingStub userActionClient;
+    private UserActionControllerGrpc.UserActionControllerBlockingStub userActionClient;
 
     @GrpcClient("analyzer")
-    RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsClient;
+    private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsClient;
 
     @Override
     public void registerUserAction(long eventId, long userId, ActionTypeProto actionType, Instant timestamp) {

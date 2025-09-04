@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.yandex.practicum.dto.category.CategoryDto;
-import ru.yandex.practicum.dto.user.UserDto;
+import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class EventShortDto {
 
     CategoryDto category;
 
-    UserDto initiator;
+    UserShortDto initiator;
 
     @NotNull
     @JsonFormat(pattern = DateTimeUtil.DATE_TIME_FORMAT)
@@ -40,5 +40,5 @@ public class EventShortDto {
 
     Boolean paid;
 
-    Long views;
+    Double rating;
 }

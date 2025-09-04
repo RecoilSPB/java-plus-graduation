@@ -16,7 +16,7 @@ analyzer:
       group-id: "action-analyzer-group"
       client-id: "action-consumer-1"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-      value-deserializer: "ru.yandex.practicum.avro.UserActionDeserializer"
+      value-deserializer: "ru.yandex.practicum.deserializer.UserActionDeserializer"
       attempt-timeout: 1000
       enable-auto-commit: "false"
 
@@ -24,7 +24,7 @@ analyzer:
       group-id: "similarity-analyzer-group"
       client-id: "similarity-consumer-1"
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-      value-deserializer: "ru.yandex.practicum.avro.EventSimilarityDeserializer"
+      value-deserializer: "ru.yandex.practicum.deserializer.EventSimilarityDeserializer"
       attempt-timeout: 1000
       enable-auto-commit: "false"
 

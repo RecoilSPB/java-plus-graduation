@@ -1,6 +1,5 @@
-package ru.yandex.practicum.avro;
+package ru.yandex.practicum.deserializer;
 
-import ru.yandex.practicum.deserializer.BaseAvroDeserializer;
 import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
 
 public class EventSimilarityDeserializer extends BaseAvroDeserializer<EventSimilarityAvro> {
