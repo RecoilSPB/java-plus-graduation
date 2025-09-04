@@ -6,27 +6,29 @@ import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
-    @Mapping(target = "confirmedRequests", ignore = true)
-    @Mapping(target = "views", ignore = true)
+
     @Named(value = "EventShortDto")
+    @Mapping(target = "confirmedRequests", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "initiator", source = "initiator")
     @Mapping(target = "id", source = "event.id")
     EventShortDto toShortDto(Event event, UserShortDto initiator);
 
     @Mapping(target = "confirmedRequests", ignore = true)
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "location", source = "location")
     @Mapping(target = "initiator", source = "initiator")
     EventFullDto toFullDto(Event event, LocationDto location, UserShortDto initiator);
 
     @Mapping(target = "confirmedRequests", ignore = true)
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     EventFullDto toFullDto(Event event);
 
     List<EventFullDto> toFullDto(Iterable<Event> event);
@@ -61,4 +63,6 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Event update(@MappingTarget Event event, UpdateEventAdminDto eventUpdateDto, Category category, Long locationId);
+
+    RecommendedEventDto map(RecommendedEventProto proto);
 }
