@@ -1,6 +1,6 @@
 package ru.yandex.practicum.client;
 
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
 import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
 
 import java.time.Instant;

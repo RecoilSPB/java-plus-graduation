@@ -1,8 +1,8 @@
 package ru.yandex.practicum.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
-import ru.yandex.practicum.grpc.stats.action.UserActionProto;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
+import ru.practicum.ewm.stats.proto.UserActionProto;
 import ru.yandex.practicum.model.ActionType;
 import ru.yandex.practicum.model.UserAction;
 import ru.yandex.practicum.stats.avro.ActionTypeAvro;
@@ -27,7 +27,7 @@ public class UserActionMapper {
     }
 
 
-    public UserAction toEntity(UserActionProto userActionProto) {
+    public static UserAction toEntity(UserActionProto userActionProto) {
         return UserAction.builder()
                 .userId(userActionProto.getUserId())
                 .eventId(userActionProto.getEventId())
@@ -37,7 +37,7 @@ public class UserActionMapper {
                 .build();
     }
 
-    public ActionType toActionType(ActionTypeProto actionTypeProto) {
+    public static ActionType toActionType(ActionTypeProto actionTypeProto) {
         return switch (actionTypeProto) {
             case ACTION_VIEW -> ActionType.VIEW;
             case ACTION_REGISTER -> ActionType.REGISTER;

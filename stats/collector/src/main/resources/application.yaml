@@ -22,3 +22,13 @@ eureka:
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
+
+# ВКЛЮЧАЕМ ДЕТАЛЬНОЕ ЛОГИРОВАНИЕ
+#logging:
+#  level:
+#    root: INFO
+#    com.netflix.eureka: DEBUG
+#    com.netflix.discovery: DEBUG
+#    org.springframework.cloud.netflix.eureka: DEBUG
+#    org.springframework.cloud.netflix.eureka.server: DEBUG
+#    org.springframework.web: DEBUG

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
 import ru.yandex.practicum.client.LocationClient;
 import ru.yandex.practicum.client.RequestClient;
 import ru.yandex.practicum.client.StatsClient;
@@ -25,7 +26,6 @@ import ru.yandex.practicum.event.service.PublicEventService;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.LocationProcessingException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
 
 import java.time.Instant;
 import java.util.*;
