@@ -1,5 +1,6 @@
 package ru.yandex.practicum.service;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -7,16 +8,16 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.config.KafkaConfig;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.mapper.UserActionMapper;
 import ru.yandex.practicum.model.UserAction;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ActionServiceImpl implements ActionService{
 
-    private final Producer<String, SpecificRecordBase> producer;
+    private final Producer<Long, SpecificRecordBase> producer;
     private final KafkaConfig kafkaConfig;
     private final UserActionMapper userActionMapper;
 
@@ -34,11 +35,11 @@ public class ActionServiceImpl implements ActionService{
     }
 
     private void send(String topic, Long key, Long timestamp, SpecificRecordBase specificRecordBase) {
-        ProducerRecord<String, SpecificRecordBase> rec = new ProducerRecord<>(
+        ProducerRecord<Long, SpecificRecordBase> rec = new ProducerRecord<>(
                 topic,
                 null,
                 timestamp,
-                key.toString(),
+                key,
                 specificRecordBase);
         producer.send(rec, (metadata, exception) -> {
             if (exception != null) {
@@ -48,5 +49,13 @@ public class ActionServiceImpl implements ActionService{
                         metadata.topic(), metadata.partition(), metadata.offset());
             }
         });
+    }
+
+    @PreDestroy
+    private void close() {
+        if (producer != null) {
+            producer.flush();
+            producer.close();
+        }
     }
 }

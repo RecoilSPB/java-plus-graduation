@@ -1,10 +1,10 @@
 package ru.yandex.practicum.service;
 
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.grpc.stats.request.InteractionsCountRequestProto;
 import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
 import ru.yandex.practicum.grpc.stats.request.SimilarEventsRequestProto;
 import ru.yandex.practicum.grpc.stats.request.UserPredictionsRequestProto;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 import java.util.List;
 

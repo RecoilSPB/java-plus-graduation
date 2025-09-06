@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.grpc.stats.request.InteractionsCountRequestProto;
 import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
 import ru.yandex.practicum.grpc.stats.request.SimilarEventsRequestProto;
@@ -16,7 +17,6 @@ import ru.yandex.practicum.model.RecommendedEvent;
 import ru.yandex.practicum.model.UserAction;
 import ru.yandex.practicum.repository.EventSimilarityRepository;
 import ru.yandex.practicum.repository.UserActionRepository;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 import java.util.*;
 import java.util.stream.Collectors;

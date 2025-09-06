@@ -9,9 +9,9 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.config.KafkaConfig;
-import ru.yandex.practicum.stats.avro.ActionTypeAvro;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
+import ru.yandex.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 import java.util.*;
 
@@ -149,9 +149,9 @@ public class SimilarityServiceImpl implements SimilarityService{
 
         private double getWeightByActionType(ActionTypeAvro actionType) {
             return switch (actionType) {
-                case ACTION_VIEW -> 0.4;
-                case ACTION_REGISTER -> 0.8;
-                case ACTION_LIKE -> 1.0;
+                case VIEW -> 0.4;
+                case REGISTER -> 0.8;
+                case LIKE -> 1.0;
             };
         }
 

@@ -3,10 +3,10 @@ package ru.yandex.practicum.mapper;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.stats.proto.ActionTypeProto;
 import ru.practicum.ewm.stats.proto.UserActionProto;
+import ru.yandex.practicum.ewm.stats.avro.ActionTypeAvro;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.model.ActionType;
 import ru.yandex.practicum.model.UserAction;
-import ru.yandex.practicum.stats.avro.ActionTypeAvro;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 import java.time.Instant;
 
@@ -39,9 +39,9 @@ public class UserActionMapper {
 
     public static ActionType toActionType(ActionTypeProto actionTypeProto) {
         return switch (actionTypeProto) {
-            case ACTION_VIEW -> ActionType.ACTION_VIEW;
-            case ACTION_REGISTER -> ActionType.ACTION_REGISTER;
-            case ACTION_LIKE -> ActionType.ACTION_LIKE;
+            case ACTION_VIEW -> ActionType.VIEW;
+            case ACTION_REGISTER -> ActionType.REGISTER;
+            case ACTION_LIKE -> ActionType.LIKE;
             default -> null;
         };
     }

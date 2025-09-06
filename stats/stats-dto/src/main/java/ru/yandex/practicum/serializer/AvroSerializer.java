@@ -11,7 +11,6 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-@SuppressWarnings("unused")
 public class AvroSerializer implements Serializer<SpecificRecordBase> {
 
     private final EncoderFactory encoderFactory = EncoderFactory.get();

@@ -8,8 +8,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
-import ru.yandex.practicum.stats.avro.UserActionAvro;
 
 import java.util.Properties;
 

@@ -1,10 +1,9 @@
-@namespace("ru.yandex.practicum.stats.avro")
-
+@namespace("ru.yandex.practicum.ewm.stats.avro")
 protocol UserActionProtocol {
     enum ActionTypeAvro {
-            ACTION_VIEW,
-            ACTION_REGISTER,
-            ACTION_LIKE
+            VIEW,
+            REGISTER,
+            LIKE
         }
 
     record UserActionAvro{
@@ -13,5 +12,4 @@ protocol UserActionProtocol {
         ActionTypeAvro actionType;
         timestamp_ms timestamp;
     }
-
 }
