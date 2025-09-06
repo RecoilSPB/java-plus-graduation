@@ -5,7 +5,7 @@ aggregator:
     consumer:
       group-id: "aggregator-group"
       client-id: "consumer-1"
-      key-deserializer: "org.apache.kafka.common.serialization.LongSerializer"
+      key-deserializer: "org.apache.kafka.common.serialization.LongDeserializer"
       value-deserializer: "ru.yandex.practicum.deserializer.UserActionDeserializer"
       attempt-timeout: 1000
       enable-auto-commit: "false"
@@ -16,7 +16,7 @@ aggregator:
       value-serializer: "ru.yandex.practicum.serializer.AvroSerializer"
 
     user-action-topic: "stats.user-actions.v1"
-    events-similarity-topic: "stats.events-similarity.v1"
+    event-similarity-topic: "stats.events-similarity.v1"
 
 spring:
   jpa:
