@@ -29,7 +29,7 @@ analyzer:
       enable-auto-commit: "false"
 
     user-action-topic: "stats.user-actions.v1"
-    events-similarity-topic: "stats.events-similarity.v1"
+    event-similarity-topic: "stats.events-similarity.v1"
 
 spring:
   jpa:
