@@ -39,9 +39,9 @@ public class UserActionMapper {
 
     public static ActionType toActionType(ActionTypeProto actionTypeProto) {
         return switch (actionTypeProto) {
-            case ACTION_VIEW -> ActionType.VIEW;
-            case ACTION_REGISTER -> ActionType.REGISTER;
-            case ACTION_LIKE -> ActionType.LIKE;
+            case ACTION_VIEW -> ActionType.ACTION_VIEW;
+            case ACTION_REGISTER -> ActionType.ACTION_REGISTER;
+            case ACTION_LIKE -> ActionType.ACTION_LIKE;
             default -> null;
         };
     }

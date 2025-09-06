@@ -1,7 +1,7 @@
 package ru.yandex.practicum.model;
 
 public enum ActionType {
-    VIEW,
-    REGISTER,
-    LIKE
+    ACTION_VIEW,
+    ACTION_REGISTER,
+    ACTION_LIKE
 }
