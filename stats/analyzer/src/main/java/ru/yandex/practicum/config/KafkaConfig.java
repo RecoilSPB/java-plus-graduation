@@ -25,7 +25,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaConsumer<String, EventSimilarityAvro> getEventSimilarityConsumer() {
+    public KafkaConsumer<Long, EventSimilarityAvro> getEventSimilarityConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigProperties.getBootstrapServers());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigProperties.getEventSimilarityConsumer().getGroupId());
@@ -41,7 +41,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaConsumer<String, UserActionAvro> getUserActionConsumer() {
+    public KafkaConsumer<Long, UserActionAvro> getUserActionConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigProperties.getBootstrapServers());
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigProperties.getUserActionConsumer().getGroupId());

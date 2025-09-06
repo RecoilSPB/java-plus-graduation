@@ -28,7 +28,7 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class EventSimilarityProcessor implements Runnable {
-    Consumer<String, EventSimilarityAvro> consumer;
+    Consumer<Long, EventSimilarityAvro> consumer;
     KafkaConfig kafkaConfig;
     Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     EventSimilarityRepository eventSimilarityRepository;
@@ -40,11 +40,11 @@ public class EventSimilarityProcessor implements Runnable {
         try {
             consumer.subscribe(List.of(kafkaConfig.getKafkaConfigProperties().getEventSimilarityTopic()));
             while (true) {
-                ConsumerRecords<String, EventSimilarityAvro> records = consumer
+                ConsumerRecords<Long, EventSimilarityAvro> records = consumer
                         .poll(Duration.ofMillis(kafkaConfig.getKafkaConfigProperties()
                                 .getEventSimilarityConsumer().getAttemptTimeout()));
                 int count = 0;
-                for (ConsumerRecord<String, EventSimilarityAvro> record : records) {
+                for (ConsumerRecord<Long, EventSimilarityAvro> record : records) {
                     handleRecord(record);
                     manageOffsets(record, count, consumer);
                     count++;
@@ -68,7 +68,7 @@ public class EventSimilarityProcessor implements Runnable {
         }
     }
 
-    private void handleRecord(ConsumerRecord<String, EventSimilarityAvro> consumerRecord) {
+    private void handleRecord(ConsumerRecord<Long, EventSimilarityAvro> consumerRecord) {
         log.info("handleRecord {}", consumerRecord);
         EventSimilarity eventSimilarity = eventMapper.mapToEventSimilarity(consumerRecord.value());
 
@@ -79,9 +79,9 @@ public class EventSimilarityProcessor implements Runnable {
         eventSimilarityRepository.save(eventSimilarity);
     }
 
-    private void manageOffsets(ConsumerRecord<String, EventSimilarityAvro> consumerRecord,
+    private void manageOffsets(ConsumerRecord<Long, EventSimilarityAvro> consumerRecord,
                                int count,
-                               Consumer<String, EventSimilarityAvro> consumer) {
+                               Consumer<Long, EventSimilarityAvro> consumer) {
         currentOffsets.put(
                 new TopicPartition(consumerRecord.topic(), consumerRecord.partition()),
                 new OffsetAndMetadata(consumerRecord.offset() + 1)

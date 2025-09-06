@@ -29,7 +29,7 @@ public class AggregationStarter {
     static final int MAX_POLL_RECORDS = 500;
 
     final SimilarityService similarityService;
-    final KafkaConsumer<String, UserActionAvro> consumer;
+    final KafkaConsumer<Long, UserActionAvro> consumer;
     final KafkaConfig kafkaConfig;
     final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     final AtomicInteger processedRecordsCount = new AtomicInteger(0);
@@ -58,7 +58,7 @@ public class AggregationStarter {
 
     private void processRecordsBatch() {
         Duration timeout = Duration.ofMillis(kafkaConfig.getKafkaConfigProperties().getConsumer().getAttemptTimeout());
-        ConsumerRecords<String, UserActionAvro> records = consumer.poll(timeout);
+        ConsumerRecords<Long, UserActionAvro> records = consumer.poll(timeout);
 
         if (records.isEmpty()) {
             return;
@@ -66,7 +66,7 @@ public class AggregationStarter {
 
         log.debug("Polled {} records from Kafka", records.count());
 
-        for (ConsumerRecord<String, UserActionAvro> record : records) {
+        for (ConsumerRecord<Long, UserActionAvro> record : records) {
             try {
                 processSingleRecord(record);
             } catch (Exception e) {
@@ -79,7 +79,7 @@ public class AggregationStarter {
         commitOffsetsAsync();
     }
 
-    private void processSingleRecord(ConsumerRecord<String, UserActionAvro> record) {
+    private void processSingleRecord(ConsumerRecord<Long, UserActionAvro> record) {
         if (log.isDebugEnabled()) {
             log.debug("Processing record: key={}, offset={}, partition={}",
                     record.key(), record.offset(), record.partition());
@@ -93,7 +93,7 @@ public class AggregationStarter {
         }
     }
 
-    private void handleRecord(ConsumerRecord<String, UserActionAvro> consumerRecord) {
+    private void handleRecord(ConsumerRecord<Long, UserActionAvro> consumerRecord) {
         try {
             List<EventSimilarityAvro> eventSimilarityList = similarityService.updateSimilarity(consumerRecord.value());
             for (EventSimilarityAvro eventSimilarity : eventSimilarityList) {
@@ -105,7 +105,7 @@ public class AggregationStarter {
         }
     }
 
-    private void updateOffset(ConsumerRecord<String, UserActionAvro> consumerRecord) {
+    private void updateOffset(ConsumerRecord<Long, UserActionAvro> consumerRecord) {
         TopicPartition partition = new TopicPartition(consumerRecord.topic(), consumerRecord.partition());
         currentOffsets.put(partition, new OffsetAndMetadata(consumerRecord.offset() + 1));
     }

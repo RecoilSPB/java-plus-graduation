@@ -29,7 +29,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaProducer<String, SpecificRecordBase> producer() {
+    public KafkaProducer<Long, SpecificRecordBase> producer() {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaConfigProperties.getBootstrapServers());
@@ -44,7 +44,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaConsumer<String, UserActionAvro> consumer() {
+    public KafkaConsumer<Long, UserActionAvro> consumer() {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 kafkaConfigProperties.getBootstrapServers());
