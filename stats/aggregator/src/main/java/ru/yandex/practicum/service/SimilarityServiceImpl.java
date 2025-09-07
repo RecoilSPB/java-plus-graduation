@@ -39,7 +39,7 @@ public class SimilarityServiceImpl implements SimilarityService {
         double oldWeight = addOrUpdateEventWeightForUser(eventId, userId, receivedWeight);
         double newWeight = Math.max(oldWeight, receivedWeight);
         log.info("receivedWeight = {}, oldWeight = {}, newWeight = {}", receivedWeight, oldWeight, newWeight);
-        if (oldWeight != newWeight && oldWeight < 1.0) {
+        if (oldWeight != newWeight && oldWeight <= 1.0) {
             log.info("starting update similarity");
             eventSummaryWeights.put(eventId, eventSummaryWeights.getOrDefault(eventId, 0.0) + newWeight - oldWeight);
             log.info("eventSummaryWeights updated: new summary weight for eventId = {} equals {}", eventId,
@@ -127,7 +127,7 @@ public class SimilarityServiceImpl implements SimilarityService {
         if (eventWeights.containsKey(eventId)) {
             oldWeight = eventWeights.get(eventId).get(userId);
             double maxWeight = Math.max(oldWeight, weight);
-            if (oldWeight != maxWeight && oldWeight < 1.0) {
+            if (oldWeight != maxWeight && oldWeight <= 1.0) {
                 eventWeights.get(eventId).put(userId, maxWeight);
                 log.info("eventWeights updated for eventId = {}: new weight = {}", eventId, maxWeight);
             }
