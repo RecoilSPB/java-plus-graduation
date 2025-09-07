@@ -6,11 +6,5 @@ import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
 import java.util.List;
 
 public interface SimilarityService {
-    List<EventSimilarityAvro> updateSimilarity(UserActionAvro userAction);
-
-    void collectEventSimilarity(EventSimilarityAvro eventSimilarityAvro);
-
-    default void close() {
-
-    }
+    List<EventSimilarityAvro> userActionHandle(UserActionAvro userAction);
 }
