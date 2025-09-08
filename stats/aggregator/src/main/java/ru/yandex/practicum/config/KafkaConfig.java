@@ -37,7 +37,7 @@ public class KafkaConfig {
     @Bean
     public KafkaProducer<Long, SpecificRecordBase> producer() {
         Properties properties = new Properties();
-        properties.putAll(kafkaProducerConfig.getProducer().getProperties());
+        properties.putAll(kafkaProducerConfig.getProperties());
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCommonConfig.getBootstrapServers());
         log.info("properties for producer are: {}", properties);
         return new KafkaProducer<>(properties);
@@ -46,7 +46,7 @@ public class KafkaConfig {
     @Bean
     public KafkaConsumer<Long, UserActionAvro> consumer() {
         Properties properties = new Properties();
-        properties.putAll(kafkaConsumerConfig.getConsumer().getProperties());
+        properties.putAll(kafkaConsumerConfig.getProperties());
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCommonConfig.getBootstrapServers());
         log.info("properties for consumer are: {}", properties);
         return new KafkaConsumer<>(properties);

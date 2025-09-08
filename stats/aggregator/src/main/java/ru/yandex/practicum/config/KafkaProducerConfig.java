@@ -1,6 +1,7 @@
 package ru.yandex.practicum.config;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Properties;
@@ -9,14 +10,9 @@ import java.util.Properties;
 @Setter
 @ConfigurationProperties(prefix = "aggregator.kafka.producer")
 public class KafkaProducerConfig {
-    private ProduceConfig producer;
+    private Properties properties = new Properties();
+    private Topic topics = new Topic();
 
-    @Getter
-    @Setter
-    public static class ProduceConfig {
-        private Properties properties = new Properties();
-        private Topic topics = new Topic();
-    }
 
     @Getter
     @Setter

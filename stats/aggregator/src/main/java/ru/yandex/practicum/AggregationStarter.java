@@ -38,10 +38,10 @@ public class AggregationStarter {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
         try {
-            consumer.subscribe(List.of(kafkaConsumerConfig.getConsumer().getTopic().getName()));
+            consumer.subscribe(List.of(kafkaConsumerConfig.getTopic().getName()));
             while (true) {
                 ConsumerRecords<Long, UserActionAvro> records = consumer
-                        .poll(Duration.ofMillis(kafkaConsumerConfig.getConsumer().getAttemptTimeout()));
+                        .poll(Duration.ofMillis(kafkaConsumerConfig.getAttemptTimeout()));
                 if (!records.isEmpty()) {
                     for (ConsumerRecord<Long, UserActionAvro> record : records) {
                         UserActionAvro userActionAvro = record.value();
@@ -50,8 +50,7 @@ public class AggregationStarter {
 
                         for (EventSimilarityAvro eventSimilarity : similarities) {
                             log.trace("AggregationStarter: sending eventSimilarity {}", eventSimilarity);
-                            producer.send(new ProducerRecord<>(kafkaProducerConfig.getProducer()
-                                    .getTopics().getName(),
+                            producer.send(new ProducerRecord<>(kafkaProducerConfig.getTopics().getName(),
                                     null,
                                     eventSimilarity));
                         }
