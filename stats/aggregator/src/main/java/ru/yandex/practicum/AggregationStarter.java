@@ -42,20 +42,22 @@ public class AggregationStarter {
             while (true) {
                 ConsumerRecords<Long, UserActionAvro> records = consumer
                         .poll(Duration.ofMillis(kafkaConsumerConfig.getConsumer().getAttemptTimeout()));
-                for (ConsumerRecord<Long, UserActionAvro> record : records) {
-                    UserActionAvro userActionAvro = record.value();
-                    log.trace("\nAggregationStarter: accepted {}", userActionAvro);
-                    List<EventSimilarityAvro> similarities = similarityService.userActionHandle(userActionAvro);
+                if (!records.isEmpty()) {
+                    for (ConsumerRecord<Long, UserActionAvro> record : records) {
+                        UserActionAvro userActionAvro = record.value();
+                        log.trace("\nAggregationStarter: accepted {}", userActionAvro);
+                        List<EventSimilarityAvro> similarities = similarityService.userActionHandle(userActionAvro);
 
-                    for (EventSimilarityAvro eventSimilarity : similarities) {
-                        log.trace("AggregationStarter: sending eventSimilarity {}", eventSimilarity);
-                        producer.send(new ProducerRecord<>(kafkaProducerConfig.getProducer()
-                                .getTopics().getName(),
-                                null,
-                                eventSimilarity));
+                        for (EventSimilarityAvro eventSimilarity : similarities) {
+                            log.trace("AggregationStarter: sending eventSimilarity {}", eventSimilarity);
+                            producer.send(new ProducerRecord<>(kafkaProducerConfig.getProducer()
+                                    .getTopics().getName(),
+                                    null,
+                                    eventSimilarity));
+                        }
                     }
+                    consumer.commitAsync();
                 }
-                consumer.commitAsync();
             }
 
         } catch (WakeupException ignores) {
