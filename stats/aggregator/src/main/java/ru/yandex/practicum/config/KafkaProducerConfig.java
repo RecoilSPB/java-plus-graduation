@@ -11,7 +11,7 @@ import java.util.Properties;
 @ConfigurationProperties(prefix = "aggregator.kafka.producer")
 public class KafkaProducerConfig {
     private Properties properties = new Properties();
-    private Topic topics = new Topic();
+    private Topic topic = new Topic();
 
 
     @Getter

@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
@@ -50,7 +53,7 @@ public class AggregationStarter {
 
                         for (EventSimilarityAvro eventSimilarity : similarities) {
                             log.trace("AggregationStarter: sending eventSimilarity {}", eventSimilarity);
-                            producer.send(new ProducerRecord<>(kafkaProducerConfig.getTopics().getName(),
+                            producer.send(new ProducerRecord<>(kafkaProducerConfig.getTopic().getName(),
                                     null,
                                     eventSimilarity));
                         }
