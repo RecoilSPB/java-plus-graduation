@@ -10,9 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "analyzer.kafka")
 public class KafkaConfigProperties {
     String bootstrapServers;
-    KafkaProperties userActionConsumer;
-    KafkaProperties eventSimilarityConsumer;
-
-    String userActionTopic;
-    String eventSimilarityTopic;
+    KafkaConsumerProperties userActionConsumer;
+    KafkaConsumerProperties eventSimilarityConsumer;
 }

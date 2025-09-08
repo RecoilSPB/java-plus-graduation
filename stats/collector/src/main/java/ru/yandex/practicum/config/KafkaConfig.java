@@ -29,9 +29,7 @@ public class KafkaConfig {
     public Producer<Long, SpecificRecordBase> producer() {
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigProperties.getBootstrapServers());
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG, kafkaConfigProperties.getClientIdConfig());
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaConfigProperties.getProducerKeySerializer());
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafkaConfigProperties.getProducerValueSerializer());
+        properties.putAll(kafkaConfigProperties.getProducer().getProperties());
         return new KafkaProducer<>(properties);
     }
 }

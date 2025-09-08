@@ -11,7 +11,10 @@ grpc:
 collector:
   kafka:
     bootstrap-servers: ${KAFKA_URL:localhost:9092}
-    client-id-config: "producer-1"
-    producer-key-serializer: "org.apache.kafka.common.serialization.LongSerializer"
-    producer-value-serializer: "ru.yandex.practicum.serializer.AvroSerializer"
-    user-action-topic: "stats.user-actions.v1"
+    producer:
+      properties:
+        "client.id": "producer-1"
+        "key.deserializer": "org.apache.kafka.common.serialization.LongSerializer"
+        "value.deserializer": "ru.yandex.practicum.serializer.AvroSerializer"
+      topic:
+        name: "stats.user-actions.v1"

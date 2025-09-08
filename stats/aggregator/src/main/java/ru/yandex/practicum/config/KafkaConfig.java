@@ -20,25 +20,25 @@ import java.util.Properties;
 @Getter
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@EnableConfigurationProperties({KafkaConfigProperties.class})
+@EnableConfigurationProperties({KafkaCommonConfig.class, KafkaProducerConfig.class, KafkaConsumerConfig.class})
 public class KafkaConfig {
-    KafkaConfigProperties kafkaConfigProperties;
+    KafkaCommonConfig kafkaCommonConfig;
+    KafkaProducerConfig kafkaProducerConfig;
+    KafkaConsumerConfig kafkaConsumerConfig;
 
-    public KafkaConfig(KafkaConfigProperties properties) {
-        this.kafkaConfigProperties = properties;
+    public KafkaConfig(KafkaCommonConfig kafkaCommonConfig,
+                       KafkaProducerConfig kafkaProducerConfig,
+                       KafkaConsumerConfig kafkaConsumerConfig) {
+        this.kafkaCommonConfig = kafkaCommonConfig;
+        this.kafkaProducerConfig = kafkaProducerConfig;
+        this.kafkaConsumerConfig = kafkaConsumerConfig;
     }
 
     @Bean
     public KafkaProducer<Long, SpecificRecordBase> producer() {
         Properties properties = new Properties();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                kafkaConfigProperties.getBootstrapServers());
-        properties.put(ProducerConfig.CLIENT_ID_CONFIG,
-                kafkaConfigProperties.getProducer().getClientId());
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getProducer().getKeySerializer());
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getProducer().getValueSerializer());
+        properties.putAll(kafkaProducerConfig.getProducer().getProperties());
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCommonConfig.getBootstrapServers());
         log.info("properties for producer are: {}", properties);
         return new KafkaProducer<>(properties);
     }
@@ -46,18 +46,8 @@ public class KafkaConfig {
     @Bean
     public KafkaConsumer<Long, UserActionAvro> consumer() {
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                kafkaConfigProperties.getBootstrapServers());
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG,
-                kafkaConfigProperties.getConsumer().getGroupId());
-        properties.put(ConsumerConfig.CLIENT_ID_CONFIG,
-                kafkaConfigProperties.getConsumer().getClientId());
-        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getConsumer().getKeyDeserializer());
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getConsumer().getValueDeserializer());
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
-                kafkaConfigProperties.getConsumer().getEnableAutoCommit());
+        properties.putAll(kafkaConsumerConfig.getConsumer().getProperties());
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCommonConfig.getBootstrapServers());
         log.info("properties for consumer are: {}", properties);
         return new KafkaConsumer<>(properties);
     }

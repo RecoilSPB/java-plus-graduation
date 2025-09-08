@@ -28,15 +28,7 @@ public class KafkaConfig {
     public KafkaConsumer<Long, EventSimilarityAvro> getEventSimilarityConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigProperties.getBootstrapServers());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigProperties.getEventSimilarityConsumer().getGroupId());
-        props.put(ConsumerConfig.CLIENT_ID_CONFIG, kafkaConfigProperties.getEventSimilarityConsumer().getClientId());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getEventSimilarityConsumer().getKeyDeserializer());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getEventSimilarityConsumer().getValueDeserializer());
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
-                kafkaConfigProperties.getEventSimilarityConsumer().getEnableAutoCommit());
-
+        props.putAll(kafkaConfigProperties.getEventSimilarityConsumer().getProperties());
         return new KafkaConsumer<>(props);
     }
 
@@ -44,14 +36,7 @@ public class KafkaConfig {
     public KafkaConsumer<Long, UserActionAvro> getUserActionConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfigProperties.getBootstrapServers());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConfigProperties.getUserActionConsumer().getGroupId());
-        props.put(ConsumerConfig.CLIENT_ID_CONFIG, kafkaConfigProperties.getUserActionConsumer().getClientId());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getUserActionConsumer().getKeyDeserializer());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                kafkaConfigProperties.getUserActionConsumer().getValueDeserializer());
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
-                kafkaConfigProperties.getUserActionConsumer().getEnableAutoCommit());
+        props.putAll(kafkaConfigProperties.getUserActionConsumer().getProperties());
         return new KafkaConsumer<>(props);
     }
 }

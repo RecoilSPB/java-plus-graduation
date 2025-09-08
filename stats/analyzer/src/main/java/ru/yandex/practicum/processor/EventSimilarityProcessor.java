@@ -11,7 +11,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.config.KafkaConfig;
+import ru.yandex.practicum.config.KafkaConfigProperties;
 import ru.yandex.practicum.mapper.EventMapper;
 import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EventSimilarityProcessor implements Runnable {
     Consumer<Long, EventSimilarityAvro> consumer;
-    KafkaConfig kafkaConfig;
+    KafkaConfigProperties kafkaConfigProperties;
     Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     EventSimilarityRepository eventSimilarityRepository;
     EventMapper eventMapper;
@@ -38,11 +38,12 @@ public class EventSimilarityProcessor implements Runnable {
     public void run() {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
         try {
-            consumer.subscribe(List.of(kafkaConfig.getKafkaConfigProperties().getEventSimilarityTopic()));
+            consumer.subscribe(List.of(kafkaConfigProperties.getEventSimilarityConsumer()
+                    .getTopic()
+                    .getName()));
             while (true) {
                 ConsumerRecords<Long, EventSimilarityAvro> records = consumer
-                        .poll(Duration.ofMillis(kafkaConfig.getKafkaConfigProperties()
-                                .getEventSimilarityConsumer().getAttemptTimeout()));
+                        .poll(Duration.ofMillis(kafkaConfigProperties.getEventSimilarityConsumer().getAttemptTimeout()));
                 int count = 0;
                 for (ConsumerRecord<Long, EventSimilarityAvro> record : records) {
                     handleRecord(record);

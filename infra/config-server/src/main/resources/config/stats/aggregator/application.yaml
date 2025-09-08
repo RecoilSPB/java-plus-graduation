@@ -1,22 +1,23 @@
 aggregator:
   kafka:
     bootstrap-servers: ${KAFKA_URL:localhost:9092}
-
     consumer:
-      group-id: "aggregator-group"
-      client-id: "consumer-1"
-      key-deserializer: "org.apache.kafka.common.serialization.LongDeserializer"
-      value-deserializer: "ru.yandex.practicum.deserializer.UserActionDeserializer"
       attempt-timeout: 1000
-      enable-auto-commit: "false"
-
+      properties:
+        "group.id": "aggregator-group"
+        "client.id": "consumer-1"
+        "key.deserializer": "org.apache.kafka.common.serialization.LongDeserializer"
+        "value.deserializer": "ru.yandex.practicum.deserializer.UserActionDeserializer"
+        "enable.auto.commit": "false"
+      topic:
+        name: "stats.user-actions.v1"
     producer:
-      client-id: "producer-2"
-      key-serializer: "org.apache.kafka.common.serialization.LongSerializer"
-      value-serializer: "ru.yandex.practicum.serializer.AvroSerializer"
-
-    user-action-topic: "stats.user-actions.v1"
-    event-similarity-topic: "stats.events-similarity.v1"
+      properties:
+        "client.id": "producer-2"
+        "key.serializer": "org.apache.kafka.common.serialization.LongSerializer"
+        "value.serializer": "ru.yandex.practicum.serializer.AvroSerializer"
+      topic:
+        name: "stats.events-similarity.v1"
 
 spring:
   jpa:

@@ -7,7 +7,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.config.KafkaConfig;
+import ru.yandex.practicum.config.KafkaConfigProperties;
 import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.mapper.UserActionMapper;
 import ru.yandex.practicum.model.UserAction;
@@ -18,18 +18,18 @@ import ru.yandex.practicum.model.UserAction;
 public class ActionServiceImpl implements ActionService{
 
     private final Producer<Long, SpecificRecordBase> producer;
-    private final KafkaConfig kafkaConfig;
+    private final KafkaConfigProperties kafkaConfigProperties;
     private final UserActionMapper userActionMapper;
 
     @Override
     public void collectUserAction(UserAction userAction) {
         log.info("ActionService: call collectUserAction for UserAction = {}", userAction);
-        String userActionTopic = kafkaConfig.getKafkaConfigProperties().getUserActionTopic();
+        String userActionTopic = kafkaConfigProperties.getProducer().getTopics().getName();
         UserActionAvro userActionAvro = userActionMapper.toUserActionAvro(userAction);
         long timestamp = userAction.getTimestamp().toEpochMilli();
-        Long EventId = userAction.getEventId();
+        Long eventId = userAction.getEventId();
         send(userActionTopic,
-                EventId,
+                eventId,
                 timestamp,
                 userActionAvro);
     }

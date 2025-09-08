@@ -11,7 +11,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.config.KafkaConfig;
+import ru.yandex.practicum.config.KafkaConsumerConfig;
+import ru.yandex.practicum.config.KafkaProducerConfig;
 import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.service.SimilarityService;
 import ru.yandex.practicum.stats.avro.EventSimilarityAvro;
@@ -26,20 +27,21 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AggregationStarter {
-    private final SimilarityService similarityService;
-    private final Consumer<Long, UserActionAvro> consumer;
-    private final Producer<Long, SpecificRecordBase> producer;
-    private final KafkaConfig kafkaConfig;
-    private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+    final SimilarityService similarityService;
+    final Consumer<Long, UserActionAvro> consumer;
+    final Producer<Long, SpecificRecordBase> producer;
+    final KafkaConsumerConfig kafkaConsumerConfig;
+    final KafkaProducerConfig kafkaProducerConfig;
+    final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
     public void start() {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
         try {
-            consumer.subscribe(List.of(kafkaConfig.getKafkaConfigProperties().getUserActionTopic()));
+            consumer.subscribe(List.of(kafkaConsumerConfig.getConsumer().getTopic().getName()));
             while (true) {
                 ConsumerRecords<Long, UserActionAvro> records = consumer
-                        .poll(Duration.ofMillis(kafkaConfig.getKafkaConfigProperties().getConsumer().getAttemptTimeout()));
+                        .poll(Duration.ofMillis(kafkaConsumerConfig.getConsumer().getAttemptTimeout()));
                 for (ConsumerRecord<Long, UserActionAvro> record : records) {
                     UserActionAvro userActionAvro = record.value();
                     log.trace("\nAggregationStarter: accepted {}", userActionAvro);
@@ -47,7 +49,8 @@ public class AggregationStarter {
 
                     for (EventSimilarityAvro eventSimilarity : similarities) {
                         log.trace("AggregationStarter: sending eventSimilarity {}", eventSimilarity);
-                        producer.send(new ProducerRecord<>(kafkaConfig.getKafkaConfigProperties().getEventSimilarityTopic(),
+                        producer.send(new ProducerRecord<>(kafkaProducerConfig.getProducer()
+                                .getTopics().getName(),
                                 null,
                                 eventSimilarity));
                     }

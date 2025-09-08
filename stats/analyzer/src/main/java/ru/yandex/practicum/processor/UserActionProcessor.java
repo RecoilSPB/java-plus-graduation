@@ -9,7 +9,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.config.KafkaConfig;
+import ru.yandex.practicum.config.KafkaConfigProperties;
 import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
 import ru.yandex.practicum.service.RecommendationService;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserActionProcessor implements Runnable {
     private final Consumer<Long, UserActionAvro> consumer;
-    private final KafkaConfig kafkaConfig;
+    private final KafkaConfigProperties kafkaConfigProperties;
     private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     private final RecommendationService recommendationService;
 
@@ -31,11 +31,12 @@ public class UserActionProcessor implements Runnable {
     public void run() {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
         try {
-            consumer.subscribe(List.of(kafkaConfig.getKafkaConfigProperties().getUserActionTopic()));
+            consumer.subscribe(List.of(kafkaConfigProperties.getUserActionConsumer()
+                    .getTopic()
+                    .getName()));
             while (true) {
                 ConsumerRecords<Long, UserActionAvro> records = consumer
-                        .poll(Duration.ofMillis(kafkaConfig.getKafkaConfigProperties()
-                                .getUserActionConsumer().getAttemptTimeout()));
+                        .poll(Duration.ofMillis(kafkaConfigProperties.getUserActionConsumer().getAttemptTimeout()));
                 int count = 0;
                 for (ConsumerRecord<Long, UserActionAvro> record : records) {
                     handleRecord(record);
