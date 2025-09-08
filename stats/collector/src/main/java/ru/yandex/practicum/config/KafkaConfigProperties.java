@@ -16,8 +16,8 @@ public class KafkaConfigProperties {
     @Getter
     @Setter
     public static class ProduceConfig {
-        private Properties properties = new Properties();
-        private Topic topics = new Topic();
+        private Properties properties;
+        private Topic topic;
     }
 
     @Getter

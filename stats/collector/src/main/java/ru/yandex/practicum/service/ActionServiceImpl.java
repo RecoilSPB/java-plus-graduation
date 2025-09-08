@@ -24,7 +24,7 @@ public class ActionServiceImpl implements ActionService{
     @Override
     public void collectUserAction(UserAction userAction) {
         log.info("ActionService: call collectUserAction for UserAction = {}", userAction);
-        String userActionTopic = kafkaConfigProperties.getProducer().getTopics().getName();
+        String userActionTopic = kafkaConfigProperties.getProducer().getTopic().getName();
         UserActionAvro userActionAvro = userActionMapper.toUserActionAvro(userAction);
         long timestamp = userAction.getTimestamp().toEpochMilli();
         Long eventId = userAction.getEventId();
