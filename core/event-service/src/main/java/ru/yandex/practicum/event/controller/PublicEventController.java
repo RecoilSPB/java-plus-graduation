@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.event.EventFullDto;
 import ru.yandex.practicum.dto.event.EventPublicFilterParamsDto;
 import ru.yandex.practicum.dto.event.EventShortDto;
+import ru.yandex.practicum.dto.event.RecommendedEventDto;
 import ru.yandex.practicum.event.facade.EventFacade;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Validated
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -27,8 +29,9 @@ public class PublicEventController {
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Long id,
+                                     @RequestHeader("X-EWM-USER-ID") Long userId,
                                      HttpServletRequest request) {
-        return eventFacade.getEventById(id, request);
+        return eventFacade.getEventById(id, userId, request);
     }
 
     @GetMapping
@@ -37,5 +40,11 @@ public class PublicEventController {
                                                  @Positive @RequestParam(defaultValue = "10") Integer count,
                                                  HttpServletRequest request) {
         return eventFacade.getFilteredEvents(filters, from, count, request);
+    }
+
+    @GetMapping("/recommendations")
+    public Stream<RecommendedEventDto> getRecommendations(@RequestHeader("X-EWM-USER-ID") Long userId,
+                                                          @PositiveOrZero @RequestParam(defaultValue = "10") int limit) {
+        return eventFacade.getRecommendations(userId, limit);
     }
 }

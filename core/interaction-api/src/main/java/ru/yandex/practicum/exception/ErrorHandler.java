@@ -12,8 +12,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import java.util.Map;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler

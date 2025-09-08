@@ -13,4 +13,5 @@ public interface AdminEventService {
 
     Event updateEvent(Long eventId, UpdateEventAdminDto event, LocationDto location);
 
+    List<Event> getByLocation(Long locationId);
 }

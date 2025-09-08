@@ -3,12 +3,9 @@ package ru.yandex.practicum.event.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import ru.yandex.practicum.dto.event.EventState;
 import ru.yandex.practicum.event.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,50 +15,9 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
 
     Optional<Event> findByIdAndInitiatorId(Long eventId, Long initiatorId);
 
-
-    List<Event> findAllByIdIn(List<Long> ids);
-
     Page<Event> findAll(Pageable page);
 
-    @Query("SELECT e FROM Event e WHERE e.initiatorId IN :users " +
-            "AND e.state in :states " +
-            "AND e.category.id in :categories " +
-            "AND e.eventDate between :rangeStart AND :rangeEnd ")
-    List<Event> findAllEventsWithDates(List<Long> users,
-                                       List<EventState> states,
-                                       List<Long> categories,
-                                       LocalDateTime rangeStart,
-                                       LocalDateTime rangeEnd,
-                                       Pageable page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE e.category.id in :categories " +
-            "AND e.state = :state")
-    List<Event> findAllByCategoryIdPageable(List<Long> categories, EventState state, Pageable page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE (lower(e.annotation) LIKE :text " +
-            "OR lower(e.description) LIKE :text) " +
-            "AND e.state = :state")
-    List<Event> findEventsByText(String text, EventState state, Pageable page);
-
-    @Query("SELECT e FROM Event e " +
-            "WHERE (lower(e.annotation) LIKE :text " +
-            "OR lower(e.description) LIKE :text) " +
-            "AND e.eventDate >= :startDate " +
-            "AND e.eventDate <= :endDate " +
-            "AND e.state = :state")
-    List<Event> findAllByTextAndDateRange(String text, LocalDateTime startDate, LocalDateTime endDate, EventState state, Pageable page);
-
-    @Query("SELECT DISTINCT e FROM Event e " +
-            "WHERE (e.annotation LIKE COALESCE(:text, e.annotation) OR e.description LIKE COALESCE(:text, e.description)) " +
-            "AND (:categories IS NULL OR e.category.id IN :categories) " +
-            "AND (:paid IS NULL OR e.paid = :paid) " +
-            "AND e.eventDate >= COALESCE(:rangeStart, e.eventDate) " +
-            "AND e.eventDate <= COALESCE(:rangeEnd, e.eventDate) " +
-            "AND e.state = :state " +
-            "ORDER BY e.eventDate DESC")
-    List<Event> findEventList(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, EventState state);
-
     boolean existsByCategoryId(Long catId);
+
+    List<Event> findAllByLocationId(Long locationId);
 }

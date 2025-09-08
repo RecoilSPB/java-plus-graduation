@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.repository.CategoryRepository;
-import ru.yandex.practicum.dto.event.EventAdminFilterParamsDto;
-import ru.yandex.practicum.dto.event.EventState;
-import ru.yandex.practicum.dto.event.EventStateActionAdmin;
-import ru.yandex.practicum.dto.event.UpdateEventAdminDto;
+import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
@@ -115,6 +112,11 @@ public class AdminEventServiceImpl implements AdminEventService {
         log.info("Event is updated by admin: {}", event);
 
         return event;
+    }
+
+    @Override
+    public List<Event> getByLocation(Long locationId) {
+        return eventRepository.findAllByLocationId(locationId);
     }
 
     private Event getEventById(Long eventId) {

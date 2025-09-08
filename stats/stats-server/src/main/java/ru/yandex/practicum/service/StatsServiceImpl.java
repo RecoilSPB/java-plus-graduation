@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.mapper.Mapper;
+import ru.yandex.practicum.mapper.StatsMapper;
 import ru.yandex.practicum.model.Response;
 import ru.yandex.practicum.repository.StatsRepository;
 
@@ -17,20 +17,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
-@Slf4j
 public class StatsServiceImpl implements StatsService {
 
     StatsRepository statsRepository;
+    StatsMapper statsMapper;
 
     @Transactional
     public StatsDto save(StatsDto requestDto) {
         log.info("Save request to {}", requestDto);
         try {
-            var savedRequest = statsRepository.save(Mapper.toRequest(requestDto));
-            return Mapper.toRequestDto(savedRequest);
+            var savedRequest = statsRepository.save(statsMapper.toRequest(requestDto));
+            return statsMapper.toStatsDto(savedRequest);
         } catch (Exception e) {
             throw new ValidationException(e.getMessage());
         }
@@ -56,7 +57,7 @@ public class StatsServiceImpl implements StatsService {
             }
         }
         return statistic.stream()
-                .map(Mapper::toResponseDto)
+                .map(statsMapper::toStatsResponseDto)
                 .collect(Collectors.toList());
     }
 }

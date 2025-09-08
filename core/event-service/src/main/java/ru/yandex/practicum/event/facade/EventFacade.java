@@ -5,6 +5,7 @@ import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.request.EventRequestDto;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface EventFacade {
     EventFullDto addEvent(Long id, NewEventDto newEventDto);
@@ -19,7 +20,7 @@ public interface EventFacade {
 
     EventFullDto updateEvent(Long eventId, UpdateEventAdminDto updateEventAdminDto);
 
-    EventFullDto getEventById(Long eventId, HttpServletRequest request);
+    EventFullDto getEventById(Long eventId, Long userId, HttpServletRequest request);
 
     List<EventFullDto> getEvents(EventAdminFilterParamsDto filters, int from, int size);
 
@@ -31,4 +32,6 @@ public interface EventFacade {
                                                        EventRequestStatusUpdateRequestDto requestStatusUpdateRequest);
 
     List<EventFullDto> getByLocation(Long locationId);
+
+    Stream<RecommendedEventDto> getRecommendations(Long userId, int limit);
 }

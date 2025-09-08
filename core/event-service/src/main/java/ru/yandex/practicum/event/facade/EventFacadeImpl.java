@@ -6,13 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
 import ru.yandex.practicum.client.LocationClient;
 import ru.yandex.practicum.client.RequestClient;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.client.UserClient;
-import ru.yandex.practicum.dto.StatsDto;
-import ru.yandex.practicum.dto.StatsParamsDto;
-import ru.yandex.practicum.dto.StatsResponseDto;
 import ru.yandex.practicum.dto.event.*;
 import ru.yandex.practicum.dto.location.LocationDto;
 import ru.yandex.practicum.dto.location.NewLocationDto;
@@ -28,12 +26,12 @@ import ru.yandex.practicum.event.service.PublicEventService;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.LocationProcessingException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.util.DateTimeUtil;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -146,7 +144,7 @@ public class EventFacadeImpl implements EventFacade {
     }
 
     @Override
-    public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+    public EventFullDto getEventById(Long eventId, Long userId, HttpServletRequest request) {
         Event event = publicEventService.getEventById(eventId);
         if (!EventState.PUBLISHED.equals(event.getState()))
             throw new NotFoundException("On Event public get - Event isn't published with id: " + eventId);
@@ -157,7 +155,7 @@ public class EventFacadeImpl implements EventFacade {
         populateWithConfirmedRequests(List.of(event), List.of(eventDto));
         populateWithStats(List.of(eventDto));
 
-        hitStat(request);
+        statClient.registerUserAction(event.getId(), userId, ActionTypeProto.ACTION_VIEW, Instant.now());
         return eventDto;
     }
 
@@ -189,11 +187,9 @@ public class EventFacadeImpl implements EventFacade {
         populateWithStats(eventsDto);
 
         if (filters.getSort() != null && EventPublicFilterParamsDto.EventSort.VIEWS.equals(filters.getSort())) {
-            eventsDto.sort(Comparator.comparing(EventShortDto::getViews,
+            eventsDto.sort(Comparator.comparing(EventShortDto::getRating,
                     Comparator.nullsLast(Comparator.reverseOrder())));
         }
-
-        hitStat(request);
         return eventsDto;
     }
 
@@ -259,7 +255,16 @@ public class EventFacadeImpl implements EventFacade {
 
     @Override
     public List<EventFullDto> getByLocation(Long locationId) {
-        return List.of();
+        return adminEventService.getByLocation(locationId)
+                .stream()
+                .map(eventMapper::toFullDto)
+                .toList();
+    }
+
+    @Override
+    public Stream<RecommendedEventDto> getRecommendations(Long userId, int limit) {
+        return statClient.getRecommendationsForUser(userId, limit)
+                .map(eventMapper::map);
     }
 
     private UserShortDto getUserById(Long userId) {
@@ -286,19 +291,15 @@ public class EventFacadeImpl implements EventFacade {
             return;
         }
 
-        Map<String, EventShortDto> uris = eventsDto.stream()
-                .collect(Collectors.toMap(e -> String.format("/events/%s", e.getId()), e -> e));
+        List<Long> eventIds = eventsDto.stream()
+                .map(EventShortDto::getId).toList();
 
-        LocalDateTime currentDateTime = DateTimeUtil.currentDateTime();
-        List<StatsResponseDto> stats = statClient.getAllStats(StatsParamsDto.builder()
-                .start(currentDateTime.minusDays(1))
-                .end(currentDateTime)
-                .uris(uris.keySet().stream().toList())
-                .unique(true)
-                .build()).stream().toList();
+        Map<Long, Double> ratedEvents = statClient.getEventsInteractionsCount(eventIds)
+                .map(eventMapper::map)
+                .collect(Collectors.toMap(RecommendedEventDto::getEventId, RecommendedEventDto::getScore));
 
-        stats.forEach(stat -> Optional.ofNullable(uris.get(stat.getUri()))
-                .ifPresent(e -> e.setViews(stat.getHits())));
+        eventsDto.forEach(event -> Optional.ofNullable(ratedEvents.get(event.getId()))
+                .ifPresent(event::setRating));
     }
 
     private void populateWithConfirmedRequests(List<Event> events, List<? extends EventShortDto> eventsDto) {
@@ -322,15 +323,6 @@ public class EventFacadeImpl implements EventFacade {
             eventsDto.removeIf(event -> publicEventService.getEventById(event.getId()).getParticipantLimit() -
                     event.getConfirmedRequests() <= 0);
         }
-    }
-
-    private void hitStat(HttpServletRequest request) {
-        statClient.postStats(StatsDto.builder()
-                .app(APP_NAME_FOR_STAT)
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(DateTimeUtil.currentDateTime())
-                .build());
     }
 
     private List<LocationDto> getLocationsByRadius(Float lat, Float lon, Float radius) {

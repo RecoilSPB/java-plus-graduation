@@ -1,148 +1,111 @@
 package ru.yandex.practicum.client;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
+import com.google.protobuf.Timestamp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.MaxAttemptsRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriComponentsBuilder;
-import ru.yandex.practicum.dto.StatsDto;
-import ru.yandex.practicum.dto.StatsParamsDto;
-import ru.yandex.practicum.dto.StatsResponseDto;
-import ru.yandex.practicum.utils.JsonFormatPattern;
+import ru.practicum.ewm.stats.proto.ActionTypeProto;
+import ru.practicum.ewm.stats.proto.UserActionControllerGrpc;
+import ru.practicum.ewm.stats.proto.UserActionProto;
+import ru.yandex.practicum.grpc.stats.analyzer.RecommendationsControllerGrpc;
+import ru.yandex.practicum.grpc.stats.request.InteractionsCountRequestProto;
+import ru.yandex.practicum.grpc.stats.request.RecommendedEventProto;
+import ru.yandex.practicum.grpc.stats.request.SimilarEventsRequestProto;
+import ru.yandex.practicum.grpc.stats.request.UserPredictionsRequestProto;
 
-import java.net.URI;
+import java.time.Instant;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
+ * Клиент для работы со статистикой и рекомендациями
+ *
  * @author PopovN
  * @created 09.06.2025 14:13
  */
-
 @Slf4j
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class StatsClientImpl implements StatsClient {
 
-    RestTemplate rest;
-    DiscoveryClient discoveryClient;
-    RetryTemplate retryTemplate;
-    String statsServiceId;
+    @GrpcClient("collector")
+    private UserActionControllerGrpc.UserActionControllerBlockingStub userActionClient;
 
-    @Autowired
-    public StatsClientImpl(DiscoveryClient discoveryClient,
-                           @Value("${discovery.services.stats-server-id}") String statsServiceId,
-                           RestTemplateBuilder restTemplateBuilder) {
-        this.discoveryClient = discoveryClient;
-        this.statsServiceId = statsServiceId;
-        this.rest = restTemplateBuilder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(""))
-                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory())
+    @GrpcClient("analyzer")
+    private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationsClient;
+
+    @Override
+    public void registerUserAction(long eventId, long userId, ActionTypeProto actionType, Instant timestamp) {
+        log.info("Registering user action: eventId={}, userId={}, actionType={}, time={}",
+                eventId, userId, actionType, timestamp);
+
+        Timestamp protoTimestamp = convertToProtoTimestamp(timestamp);
+
+        UserActionProto request = UserActionProto.newBuilder()
+                .setEventId(eventId)
+                .setUserId(userId)
+                .setActionType(actionType)
+                .setTimestamp(protoTimestamp)
                 .build();
-        this.retryTemplate = new RetryTemplate();
-        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-        fixedBackOffPolicy.setBackOffPeriod(3000L);
-        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
 
-        MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
-        retryPolicy.setMaxAttempts(3);
-        retryTemplate.setRetryPolicy(retryPolicy);
+        log.debug("Sending user action request: {}", request);
+        userActionClient.collectUserAction(request);
     }
 
     @Override
-    public List<StatsResponseDto> getAllStats(StatsParamsDto statsParamsDto) {
-        if (!checkValidRequestParamsDto(statsParamsDto)) {
-            log.error("Get stats was not successful because of incorrect parameters {}", statsParamsDto);
-            return List.of();
-        }
+    public Stream<RecommendedEventProto> getSimilarEvents(long eventId, long userId, int maxResults) {
+        log.debug("Getting similar events: eventId={}, userId={}, maxResults={}",
+                eventId, userId, maxResults);
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("/stats")
-                .queryParam("start", statsParamsDto.getStart().format(JsonFormatPattern.DATE_TIME_FORMATTER))
-                .queryParam("end", statsParamsDto.getEnd().format(JsonFormatPattern.DATE_TIME_FORMATTER));
+        SimilarEventsRequestProto request = SimilarEventsRequestProto.newBuilder()
+                .setEventId(eventId)
+                .setUserId(userId)
+                .setMaxResults(maxResults)
+                .build();
 
-        if (statsParamsDto.getUris() != null && !statsParamsDto.getUris().isEmpty()) {
-            uriComponentsBuilder.queryParam("uris", statsParamsDto.getUris());
-        }
-        if (statsParamsDto.getUnique() != null) {
-            uriComponentsBuilder.queryParam("unique", statsParamsDto.getUnique());
-        }
-        String uri = uriComponentsBuilder.build(false)
-                .encode()
-                .toUriString();
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(defaultHeaders());
-        ResponseEntity<StatsResponseDto[]> statServerResponse;
-        try {
-            statServerResponse = rest.exchange(makeUri(uri), HttpMethod.GET, requestEntity, StatsResponseDto[].class);
-        } catch (HttpStatusCodeException e) {
-            log.error("Get stats was not successful with code {} and message {}", e.getStatusCode(), e.getMessage(), e);
-            return List.of();
-        } catch (Exception e) {
-            log.error("Get stats was not successful with exception {} and message {}", e.getClass().getName(), e.getMessage(), e);
-            return List.of();
-        }
-        statServerResponse.getBody();
-        return List.of(Objects.requireNonNull(statServerResponse.getBody()));
-    }
-
-    private boolean checkValidRequestParamsDto(StatsParamsDto statsParamsDto) {
-        if (statsParamsDto.getStart() == null || statsParamsDto.getEnd() == null
-                || statsParamsDto.getStart().isAfter(statsParamsDto.getEnd())) {
-            return false;
-        }
-
-        return statsParamsDto.getUris() != null && !statsParamsDto.getUris().isEmpty()
-                && !statsParamsDto.getUris().stream().allMatch(String::isBlank);
+        return convertToStream(recommendationsClient.getSimilarEvents(request));
     }
 
     @Override
-    public void postStats(StatsDto statsDto) {
-        HttpEntity<StatsDto> requestEntity = new HttpEntity<>(statsDto, defaultHeaders());
-        try {
-            rest.exchange(makeUri("/hit"), HttpMethod.POST, requestEntity, Object.class);
-        } catch (HttpStatusCodeException e) {
-            log.error("Hit stats was not successful with code {} and message {}", e.getStatusCode(), e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Hit stats was not successful with exception {} and message {}", e.getClass().getName(), e.getMessage(), e);
-        }
+    public Stream<RecommendedEventProto> getRecommendationsForUser(long userId, int maxResults) {
+        log.debug("Getting user recommendations: userId={}, maxResults={}",
+                userId, maxResults);
+
+        UserPredictionsRequestProto request = UserPredictionsRequestProto.newBuilder()
+                .setUserId(userId)
+                .setMaxResults(maxResults)
+                .build();
+
+        return convertToStream(recommendationsClient.getRecommendationsForUser(request));
     }
 
-    private HttpHeaders defaultHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        return headers;
+    @Override
+    public Stream<RecommendedEventProto> getEventsInteractionsCount(List<Long> eventIds) {
+        log.debug("Getting interactions count for {} events", eventIds.size());
+
+        InteractionsCountRequestProto request = InteractionsCountRequestProto.newBuilder()
+                .addAllEventId(eventIds)
+                .build();
+
+        return convertToStream(recommendationsClient.getInteractionsCount(request));
     }
 
-    private URI makeUri(String path) {
-        ServiceInstance instance = retryTemplate.execute(cxt -> getInstance(statsServiceId));
-        log.info("Host() = {} Port() = {}", instance.getHost(), instance.getPort());
-        return URI.create("http://" + instance.getHost() + ":" + instance.getPort() + path);
+    private Timestamp convertToProtoTimestamp(Instant instant) {
+        return Timestamp.newBuilder()
+                .setSeconds(instant.getEpochSecond())
+                .setNanos(instant.getNano())
+                .build();
     }
 
-    private ServiceInstance getInstance(String serviceId) {
-        try {
-            return discoveryClient
-                    .getInstances(serviceId)
-                    .getFirst();
-        } catch (Exception exception) {
-            throw new RuntimeException(
-                    "Ошибка обнаружения адреса сервиса статистики с id: " + serviceId,
-                    exception
-            );
-        }
+    private Stream<RecommendedEventProto> convertToStream(Iterator<RecommendedEventProto> iterator) {
+        Spliterator<RecommendedEventProto> spliterator =
+                Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED);
+
+        return StreamSupport.stream(spliterator, false);
     }
 }
